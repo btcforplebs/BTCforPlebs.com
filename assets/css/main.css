@@ -1,0 +1,370 @@
+/* General Variables (Light Mode by Default) */
+:root {
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --container-background: #e6e6e6;
+    --button-bg-top: #ffffff;
+    --button-bg-bottom: #e6e6e6;
+    --button-border: #aaa;
+    --button-hover-bg-top: #f9f9f9;
+    --button-hover-bg-bottom: #d9d9d9;
+    --btt-button:#aaa;
+    --price-banner-bg-top: #ffd149;
+    --price-banner-bg-bottom: #d7ac00;
+    --button-bg-top-active:  #ffd149;
+    --button-bg-bottom-active:  #d7ac00;
+    --section-background: #f7f7f7; 
+}
+
+/* Dark Mode Variables */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #666;
+        --text-color: #f4f4f4;
+        --container-background: rgba(26, 26, 26, 0.5);
+        --button-bg-top: #444;
+        --button-bg-bottom: #555;
+        --button-border: #666;
+        --button-hover-bg-top: #555;
+        --button-hover-bg-bottom: #666;
+        --btt-button: #afafaf;
+        --price-banner-bg-top: #ffd149;
+        --price-banner-bg-bottom: #d7ac00;
+        --button-bg-top-active:  #ffd149;
+        --button-bg-bottom-active:  #d7ac00;
+        --section-background: #777777; 
+    }
+}
+
+/* General Page Style */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: "Lucida Grande", Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0px 0;
+    padding-top: 0px;
+    padding-bottom: 4%;
+    box-sizing: border-box;
+}
+
+.container {
+
+    margin: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    background: var(--container-background);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .container {
+        max-width: 96%; /* Full width for mobile */
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+    .container {
+        max-width: 70%; /* Different width for desktop */
+        margin: 20px auto; /* Center the container */
+    }
+}
+
+.dropdown select {
+    display: block;
+    width: 250px;
+    margin: 21px auto;
+    padding: 15px 15px;
+    font-size: 16px;
+    background: linear-gradient(to bottom, var(--button-bg-top), var(--button-bg-bottom));
+    color: #F7931A;
+    font-weight: bold;
+    border: 1px solid var(--button-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    line-height: 1.5em;
+    transition: all 0.2s ease-in-out;
+}
+
+.dropdown select:hover {
+    background: linear-gradient(to bottom, var(--button-hover-bg-top), var(--button-hover-bg-bottom));
+    border-color: var(--button-border-hover, #888);
+}
+
+.dropdown select:focus {
+    outline: none;
+    background: linear-gradient(to bottom, var(--button-bg-top), var(--button-bg-bottom));
+    border-color: #333;
+}
+
+section {
+    margin: 50px auto;
+    position: relative;
+    padding: 10px;
+    padding-bottom: 60px;
+    max-width: 100%;
+    text-align: center;
+    border-radius: 12px;
+    background: var(--section-background);
+    box-shadow: 4px 4px 4px 4px rgba(0.1, 0.1, 0.1, 0.1);
+}
+
+
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+
+p {
+    margin-bottom: 20px;
+    color: var(--text-color);
+    font-size: 18px;
+}
+
+small {   
+    font-size: 12px;
+}
+
+.profile-picture {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px solid var(--button-border);
+    margin: 0 auto 15px;
+    display: block;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Style (Common for All Buttons) */
+.button {
+    display: block;
+    background: linear-gradient(to bottom, var(--button-bg-top), var(--button-bg-bottom));
+    border: 1px solid var(--button-border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 10px 0;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 21px auto;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    text-align: center;
+    line-height: 1.5em;
+    transition: all 0.2s ease-in-out;
+}
+.button.active {
+    background: linear-gradient(to bottom, var(--button-bg-top-active), var(--button-bg-bottom-active)); /* Subtle gold gradient */
+    border-color: #333; /* Darker border for active state */
+    font-weight: bold; /* Make text bold */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* Add a stronger shadow */
+}
+.button:hover {
+    background: linear-gradient(to bottom, var(--button-hover-bg-top), var(--button-hover-bg-bottom));
+    border-color: var(--button-border-hover, #888);
+}
+
+.button-container {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    gap: 10px; /* Add space between buttons */
+    flex-wrap: wrap; /* Ensure buttons wrap if they don't fit in one row */
+}
+
+.video-container {
+        max-width: 70%;
+        margin: auto;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .video-container {
+        max-width: 100%; /* Full width for mobile */
+    }
+}
+
+
+.links {
+    display: none; /* Hidden by default */
+    margin-top: 10px;
+    text-decoration: none;
+        text-align: center; /* Center folder items */
+}
+.links a {
+    display: block;
+    background: linear-gradient(to bottom, var(--button-bg-top), var(--button-bg-bottom));
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 10px 0;
+    border: 1px solid var(--button-border);
+    border-radius: 6px;
+    width: 75%;
+    margin: 5px auto;
+    font-size: 14px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    line-height: 1.5em;
+}
+
+.links a:hover {
+    background: linear-gradient(to bottom, var(--button-hover-bg-top), var(--button-hover-bg-bottom));
+    border-color: var(--button-border-hover, #888);
+}
+
+/* Align the logo-container to the left */
+.logo-container {
+    text-align: center; /* Align content to the left */
+    margin-bottom: 0px; /* Add spacing below the logo */
+}
+
+.logo-container a {
+    display: inline-block; /* Ensure the link and image behave properly */
+}
+
+/* Header Logo Styling */
+.header-logo {
+    width: 40px; /* Smaller size for better fit in the header */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 6px; /* Slightly rounded corners for aesthetics */
+    cursor: pointer; /* Indicate it's clickable */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    position: left;
+}
+
+.header-logo:hover {
+    opacity: 0.8; /* Slight hover effect */
+}
+/* Social Icons Container */
+.social-icons {
+    display: flex;
+    justify-content: center; /* Center the icons */
+    gap: 20px; /* Add spacing between icons */
+    margin: 20px 0; /* Add spacing around the section */
+}
+
+/* Individual Social Icon Links */
+.social-icons a {
+    display: inline-block;
+    color: #999; /* Default color */
+    font-size: 24px; /* Icon size */
+    transition: color 0.3s ease, transform 0.3s ease; /* Smooth hover effect */
+}
+
+/* Hover Effect for Icons */
+.social-icons a:hover {
+    color: #d7ac00; /* Hover color */
+    transform: scale(1.2); /* Slightly enlarge on hover */
+}
+
+/* Social Icons Font Fix */
+.social-icons i {
+    font-family: 'Font Awesome 6 Brands', 'Font Awesome 6 Free'; /* Cover multiple sets */
+    font-weight: 900;
+}
+
+#back-to-top {
+    position: sticky; /* Position the button relative to the section */
+    bottom: 20px; /* Space from the bottom of the section */
+    left: 20px; /* Space from the right of the section */
+    background-color: var(--btt-button);
+    border: 1px solid var(--button-border);
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    z-index: 10; /* Ensures it stays above other content */
+}
+
+/* Wrap the <a> around the button area */
+#back-to-top a {
+    display: flex; /* Ensures the link fills the button */
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Make the link fill the button's width */
+    height: 100%; /* Make the link fill the button's height */
+    text-decoration: none; /* Removes underline from the link */
+    font-size: 24px; /* Size of the 🔝 emoji */
+    color: #ffffff; /* Set emoji color to white */
+}
+
+#back-to-top:hover {
+    background-color: var(--btt-button); /* Changes color on hover */
+    transform: scale(1.1); /* Slight zoom on hover */
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+#btc-price-banner {
+    background: linear-gradient(to bottom, var(--price-banner-bg-top), var(--price-banner-bg-bottom));
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 90%;
+    margin: 20px auto;
+}
+
+.qr-button {
+    display: inline-block;
+    background: linear-gradient(to bottom, var(--button-bg-top), var(--button-bg-bottom));
+    border: 1px solid var(--button-border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: #F7931A;
+    padding: 10px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: auto 20px 20px auto;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    line-height: 1.5em;
+    transition: all 0.2s ease-in-out;
+}
+
+.qr-button:hover {
+    background: linear-gradient(to bottom, var(--button-hover-bg-top), var(--button-hover-bg-bottom));
+    border-color: var(--button-border-hover, #888);
+}
+
+#qrCodes img {
+    margin-top: 10px; /* Spacing above the QR code */
+    width: 150px; /* Set a width for the QR code */
+    height: auto; /* Maintain aspect ratio */
+}
+
+footer {
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 20px;
+    color: var(--text-color);
+}
