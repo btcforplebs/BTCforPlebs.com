@@ -1,13 +1,6 @@
-{
+  {
     "names": {
       "btcforplebs": "75462f4dece4fbde54a535cfa09eb0d329bda090a9c2f9ed6b5f9d1d2fb6c15b",
       "logen": "61bf790b2094afb03495c9e136acf615be0fccc2cb95b5acfb5f6ccefe18b062"
-    },
-    "relays": {
-      "75462f4dece4fbde54a535cfa09eb0d329bda090a9c2f9ed6b5f9d1d2fb6c15b": [
-        "wss://relay.btcforplebs.com"
-      "61bf790b2094afb03495c9e136acf615be0fccc2cb95b5acfb5f6ccefe18b062": [
-        "wss://logen.btcforplebs.com"
-      ]
     }
   }
