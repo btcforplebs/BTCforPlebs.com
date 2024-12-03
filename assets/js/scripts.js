@@ -134,7 +134,7 @@ fetch('/parts/footer.html')
                 const formattedTime = lastUpdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
                 // Update the text content of the last-updated-text element
-                document.getElementById('last-updated-text').textContent = `Website laste updated: ${formattedDate} ${formattedTime}`;
+                document.getElementById('last-updated-text').textContent = `Website last updated: ${formattedDate} ${formattedTime}`;
             })
             .catch(error => {
                 console.error('Error fetching last update:', error);
