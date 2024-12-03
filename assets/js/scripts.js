@@ -125,3 +125,18 @@ fetch('/parts/footer.html')
     })
     .catch(error => console.error('Error loading footer:', error));
 
+        // Fetch the latest commit information from GitHub
+        fetch('https://api.github.com/repos/btcforplebs/BTCforPlebs.com/commits/main')
+            .then(response => response.json())
+            .then(data => {
+                const lastUpdate = new Date(data.commit.author.date); // Commit date
+                const formattedDate = lastUpdate.toLocaleDateString();
+                const formattedTime = lastUpdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                // Update the text content of the last-updated-text element
+                document.getElementById('last-updated-text').textContent = `Website laste updated: ${formattedDate} ${formattedTime}`;
+            })
+            .catch(error => {
+                console.error('Error fetching last update:', error);
+                document.getElementById('last-updated-text').textContent = 'Last update: Error fetching data.';
+            });
