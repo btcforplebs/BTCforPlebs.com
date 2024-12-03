@@ -343,7 +343,7 @@ html {
     padding: 10px 10px;
     font-size: 16px;
     cursor: pointer;
-    margin: auto 20px 20px auto;
+    margin: auto auto auto auto;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
     text-align: center;
     line-height: 1.5em;
@@ -360,6 +360,7 @@ html {
     width: 150px; /* Set a width for the QR code */
     height: auto; /* Maintain aspect ratio */
 }
+
 
 footer {
     padding: 10px;
