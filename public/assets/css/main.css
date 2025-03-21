@@ -53,6 +53,7 @@ body {
 
     margin: auto;
     padding: 10px;
+    padding-top: 10px;
     box-sizing: border-box;
     text-align: center;
     background: var(--container-background);
@@ -64,6 +65,7 @@ body {
 @media (max-width: 768px) {
     .container {
         max-width: 96%; /* Full width for mobile */
+        padding-top: 10px;
     }
 }
 
