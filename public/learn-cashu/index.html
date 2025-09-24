@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashu – BTCforPlebs</title>
+    <meta name="description" content="Cashu is a Bitcoin third‑layer Chaumian ecash protocol. This guide covers how it works, its privacy features, and how to get started with app walkthroughs.">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+    <script src="/assets/js/scripts.js" defer></script>
+</head>
+<body>
+<div class="logo-container">
+    <a href="/index.html" class="prefetch">
+        <img src="/images/btcforplebs_logo.gif" alt="Home" class="header-logo">
+    </a>
+</div>
+<div class="container">
+    <h1>Cashu – Chaumian Ecash on Bitcoin</h1>
+    <p>Cashu is a lightweight, privacy‑preserving ecash system that runs on top of the Lightning Network and settles on‑chain. It uses zero‑knowledge proofs to hide the value of a transfer while remaining fully traceable when required.</p>
+
+    <!-- Dropdown navigation, similar to learn‑bitcoin -->
+    <div class="dropdown">
+        <select onchange="navigateToSection(this)">
+            <option value="">Select a topic</option>
+            <option value="what-is-cashu">What is Cashu?</option>
+            <option value="privacy">Privacy &amp; Zero‑Knowledge</option>
+            <option value="technology">Underlying Technology</option>
+            <option value="apps">Apps &amp; Use‑Cases</option>
+            <option value="getting-started">Getting Started</option>
+            <option value="videos">Video Resources</option>
+        </select>
+    </div>
+
+    <!-- Sections -->
+    <section id="what-is-cashu">
+        <h2>What is Cashu?</h2>
+        <p>Cashu is an ecash protocol that allows you to mint, transfer, and spend Bitcoin value without revealing the amount or the sender/receiver in public transactions. It leverages the Lightning Network for instant settlement while maintaining on‑chain traceability for regulatory compliance. Think of it as a privacy‑preserving UTXO that can be moved anywhere on the Lightning network.</p>
+    </section>
+
+    <section id="privacy">
+        <h2>Privacy &amp; Zero‑Knowledge</h2>
+        <p>At the core of Cashu is a zero‑knowledge range proof that proves the value of a note without exposing it. This means you can pay for goods or services with a Cashu note and the recipient can verify that the note contains sufficient value, while the transaction remains private on‑chain.</p>
+    </section>
+
+    <section id="technology">
+        <h2>Underlying Technology</h2>
+        <p>Cashu uses a set of “notes” minted by a mint and signed with a unique key. Each note contains an amount and a unique identifier that the mint keeps encrypted. Transfers are executed with the Lightning Network, but minting and redeeming are done via on‑chain transactions that are fully verifiable.</p>
+    </section>
+
+    <section id="apps">
+        <h2>Apps &amp; Use‑Cases</h2>
+        <p>Several wallet applications support Cashu, from the <a href="https://cashu.me" target="_blank" class="prefetch">Cashu Web Wallet</a> to <a href="https://meltwallet.com" target="_blank" class="prefetch">Melt’s Lightning Wallet</a>. Below are quick links to some popular ones:</p>
+        <div class="button-container">
+            <a href="https://cashu.me" class="button" target="_blank" class="prefetch">Cashu Web Wallet</a>
+            <a href="https://meltwallet.com" class="button" target="_blank" class="prefetch">Melt Wallet</a>
+            <a href="https://github.com/cashu/cashu-js-demo" class="button" target="_blank" class="prefetch">Cashu JS Demo</a>
+        </div>
+    </section>
+
+    <section id="getting-started">
+        <h2>Getting Started</h2>
+        <p>To begin using Cashu, you’ll need a Lightning‑ready wallet that supports the protocol. Most of the wallets listed above have a <code>Cashu</code> switch or integration. Once installed, create a new Cashu account, mint a few notes, and start experimenting.</p>
+    </section>
+
+    <section id="videos">
+        <h2>Video Resources</h2>
+        <!-- Explainer Video 1 -->
+        <h3>Explainer – What is Cashu?</h3>
+        <div class="video-container">
+            <video controls poster="https://i.imgur.com/Dc6m4zV.png" loading="lazy" style="width:100%">
+                <source src="https://raw.githubusercontent.com/cashu/cashu-presentation/master/intro.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <!-- Walkthrough Video 2 -->
+        <h3>How to Mint a Cashu Note</h3>
+        <div class="video-container">
+            <video controls poster="https://i.imgur.com/Kq4c1rT.png" loading="lazy" style="width:100%">
+                <source src="https://raw.githubusercontent.com/cashu/cashu-presentation/master/mint.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <!-- App Walkthrough 3 -->
+        <h3>Using Cashu in Melt Wallet</h3>
+        <div class="video-container">
+            <video controls poster="https://i.imgur.com/3p6zT9G.png" loading="lazy" style="width:100%">
+                <source src="https://raw.githubusercontent.com/cashu/cashu-presentation/master/melt-demo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
+
+    <div class="social-icons">
+        <a href="https://github.com/cashu" target="_blank" class="prefetch"><i class="fa-brands fa-github"></i></a>
+        <a href="https://twitter.com/CashuProtocol" target="_blank" class="prefetch"><i class="fa-brands fa-twitter"></i></a>
+    </div>
+
+    <div class="last-update">
+        <small id="last-updated-text"></small>
+    </div>
+</div>
+<div id="footer"></div>
+<script>
+    // Function to scroll to section based on dropdown selection
+    function navigateToSection(select){
+        const id = select.value;
+        if(id){
+            const el = document.getElementById(id);
+            el.scrollIntoView({behavior:'smooth'});
+        }
+    }
+</script>
+</body>
+</html>
