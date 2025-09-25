@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learn Nostr</title>
-    <script src='https://www.unpkg.com/nostr-login@latest/dist/unpkg.js'></script>
 
-</head>
+    <!-- 1️⃣  Nostr‑Login library -->
+    <script src="https://www.unpkg.com/nostr-login@latest/dist/unpkg.js"></script>
+
 <link rel="stylesheet" href="/assets/css/main.css">
+</head>
 <body>
         
     <!-- Bitcoin Price Banner -->
@@ -27,14 +29,20 @@
         
         <div class="video-container">
             <video controls playsinline width="100%" height="auto" poster="https://img.youtube.com/vi/8aZkg3OQc5c/maxresdefault.jpg">
-                <source src="https://player.vimeo.com/progressive_redirect/playback/920597331/rendition/1080p/file.mp4?loc=external&log_user=0&signature=679fc1e260d7c0a66c6cb9f5168b4d117e6cc79c2e895ca6c34723066c912687" type="video/mp4">
+                <source src="https://v.nostr.build/voby1u385n0ZwAbp.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         </div>
 
-        <a href="/index.html" class="button">Home</a>
+    <a href="/index.html" class="button">Home</a>
+
     </div>
+
     <div id="footer"></div>
     
+    <!-- 2️⃣  Nostr Tools library -->
+    <script type="module" src="/assets/js/nostr-tools.js"></script>
+
 </body>
 </html>
+
