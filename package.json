@@ -2,9 +2,11 @@
   "name": "btcforplebs.com",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node checklinks.js",
+    "start": "node server.js",
+    "server": "node checklinks.js",
+    "both": "concurrently \"npm start\" \"npm run server\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,5 +25,8 @@
     "config": "^4.1.1",
     "express": "^5.1.0",
     "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }

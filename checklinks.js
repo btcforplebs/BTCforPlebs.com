@@ -14,108 +14,75 @@ const links = [
   "https://nosotros.btcforplebs.com",
   "https://mint.btcforplebs.com",
   "https://cashu.btcforplebs.com",
-  // Add more links as needed
 ];
 
+// Optional: Only allow internal requests if you're not exposing this publicly
 app.use((req, res, next) => {
-  console.log("Received request:", req.method, req.url);
-  console.log("Request headers:", req.headers);
-  
-  const origin = req.headers.origin;
-  
-  // Allow requests with no origin (like mobile apps or curl requests)
-  if (!origin) {
-    console.log("No origin in request - allowing access");
-    res.header("Access-Control-Allow-Origin", "*");
-  }
-  // Allow requests from configured origins
-  else if (config.allowedOrigins.includes(origin)) {
-    console.log("Origin allowed:", origin);
-    res.header("Access-Control-Allow-Origin", origin);
-  } else {
-    console.log("Origin not in allowed list:", origin);
-  }
-
-  // Always set these headers
+  const origin = req.headers.origin || 'unknown';
+  console.log(`Request: ${req.method} ${req.url} | Origin: ${origin}`);
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type");
-  
-  // Handle preflight requests
+
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
-
   next();
 });
 
-// Test endpoint to verify server is responding
 app.get("/", (req, res) => {
-  res.json({ status: "Server is running" });
+  res.json({ status: "Local link status server running" });
 });
 
 app.get("/api/link-status", async (req, res) => {
-  console.log("Checking link statuses..."); // Add this line
+  console.log("🔄 Checking link statuses...");
   const results = {};
-  
-  const agent = new https.Agent({
-    rejectUnauthorized: false // This helps with self-signed certificates
-  });
+  const agent = new https.Agent({ rejectUnauthorized: false });
 
   for (const url of links) {
     try {
-      console.log(`Checking ${url}...`);
+      console.log(`🌐 Checking ${url}`);
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-          "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+          "User-Agent": "Mozilla/5.0",
+          "Accept": "*/*"
         },
         timeout: 10000,
         agent
       });
-      console.log(`${url} status: ${response.status}`);
-      
-      // If response is OK, it's online
+
       if (response.ok) {
         results[url] = "online";
         continue;
       }
 
-      // Special check for mint.btcforplebs.com
+      // mint special handling
       if (url.includes("mint.btcforplebs.com")) {
         try {
           const text = await response.text();
-          console.log(`Mint response text:`, text);
           const json = JSON.parse(text);
-          console.log(`Mint parsed JSON:`, json);
-          console.log(`Content-Type:`, response.headers.get('content-type'));
           if (json.detail === "Not Found") {
-            console.log(`Mint matched expected response, marking as online`);
             results[url] = "online";
           } else {
-            console.log(`Mint response didn't match expected format`);
             results[url] = "offline";
           }
-        } catch (error) {
-          console.error(`Error processing mint response:`, error);
+        } catch {
           results[url] = "offline";
         }
       } else {
-        // For all other URLs, if not OK then offline
         results[url] = "offline";
       }
     } catch (error) {
-      console.error(`Error checking ${url}:`, error.message);
+      console.error(`❌ Error checking ${url}:`, error.message);
       results[url] = "offline";
     }
   }
-  
-  console.log("Final results:", results);
+
   res.json(results);
 });
 
-app.listen(config.port, '0.0.0.0', () => {
-  console.log(`Link status API running on port ${config.port}`);
-  console.log('Allowed origins:', config.allowedOrigins);
-  console.log('Server is listening on all network interfaces');
+// ✅ IMPORTANT: Only listen on localhost
+app.listen(config.port, '127.0.0.1', () => {
+  console.log(`✅ Link status server running at http://127.0.0.1:${config.port}`);
 });
