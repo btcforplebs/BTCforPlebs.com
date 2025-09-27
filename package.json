@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "server": "node checklinks.js",
-    "both": "concurrently \"npm start\" \"npm run server\"",
+    "checklinks": "node checklinks.js",
+    "both": "concurrently 'npm start' 'npm run checklinks'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
