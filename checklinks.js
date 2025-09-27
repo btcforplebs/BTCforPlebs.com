@@ -20,10 +20,17 @@ const links = [
 
 app.use((req, res, next) => {
   console.log("Received request:", req.url);
+  console.log("Request origin:", req.headers.origin);
+  console.log("Allowed origins:", config.allowedOrigins);
   const origin = req.headers.origin;
   if (config.allowedOrigins.includes(origin)) {
+    console.log("Origin allowed:", origin);
     res.header("Access-Control-Allow-Origin", origin);
+  } else {
+    console.log("Origin not allowed:", origin);
   }
+  res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
 
@@ -88,6 +95,8 @@ app.get("/api/link-status", async (req, res) => {
   res.json(results);
 });
 
-app.listen(config.port, () => {
+app.listen(config.port, '0.0.0.0', () => {
   console.log(`Link status API running on port ${config.port}`);
+  console.log('Allowed origins:', config.allowedOrigins);
+  console.log('Server is listening on all network interfaces');
 });
