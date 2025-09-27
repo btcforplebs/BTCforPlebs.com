@@ -46,9 +46,15 @@ app.get('/api/link-status', async (req, res) => {
   }
 });
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
 
+// ... previous middleware ...
+
+// Serve static files from /public, including dot‑folders such as .well-known
+app.use(
+  express.static(path.join(__dirname, 'public'), { dotfiles: 'allow' })
+);
+
+// Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://0.0.0.0:${PORT}`);
 });
