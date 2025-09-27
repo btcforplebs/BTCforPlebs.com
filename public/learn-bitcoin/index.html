@@ -6,7 +6,6 @@
     <title>Learn Bitcoin</title>
     
     <!-- scripts -->
-    <script src="/assets/js/scripts.js" defer></script>
 
 </head>
 <link rel="stylesheet" href="/assets/css/main.css">
@@ -204,5 +203,12 @@
     <div id="footer"></div>   
     <div id="back-to-top">
 <a href="#top" title="Back to Top">🔝</a>
-</body>
+        <script>function navigateToSection(select) {
+        const sectionId = select.value;
+        if (sectionId) {
+        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+        }</script>
+
+
 </html>

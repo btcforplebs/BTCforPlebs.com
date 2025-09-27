@@ -1,13 +1,34 @@
-// public/assets/js/scripts.js
-// ---------------------------------------------
-// 1. Global toggle function – now accessible from the HTML onclick
-// 2. Properly closed DOMContentLoaded
-// 3. Minor style helper (display toggling)
-// ---------------------------------------------
+// Folder Toggle Function
+document.addEventListener('DOMContentLoaded', () => {
+  function toggleFolder(folderId, buttonId) {
+    const folder = document.getElementById(folderId);
+    const button = document.getElementById(buttonId);
+
+    // Close other folders and deactivate buttons
+    document.querySelectorAll('.links').forEach(link => {
+      if (link.id !== folderId) {
+        link.style.display = 'none';
+      }
+    });
+    document.querySelectorAll('.button').forEach(btn => {
+      if (btn.id !== buttonId) {
+        btn.classList.remove('active');
+      }
+    });
+
+    // Toggle the selected folder
+    if (folder.style.display === 'block') {
+      folder.style.display = 'none';
+      button.classList.remove('active');
+    } else {
+      folder.style.display = 'block';
+      button.classList.add('active');
+    }
+}
 
 
 
-  // --- 4. Load Footer and QR Code Toggle Logic ----------------------------
+// Footer Loader and Event Listeners
   fetch('/parts/footer.html')
     .then(response => response.text())
     .then(data => {

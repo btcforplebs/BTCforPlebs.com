@@ -18,7 +18,7 @@
 
     <!-- scripts -->
 
-    <script src="/assets/js/scripts.js"></script>
+    <script src="/assets/js/home.js"></script>
     <link rel="stylesheet" href="/assets/css/main.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -40,46 +40,34 @@
         </div>
         <button class="button" id="bitcoin-folder-btn" onclick="toggleFolder('folder2', 'bitcoin-folder-btn')">Use Bitcoin <span style="color: #F7931A;">↓</span></button>
         <div class="links" id="folder2">
-            <a href="https://lightning.btcforplebs.com" target="_blank" class="prefetch">Lightning</a>
-            <a href="https://mempool.btcforplebs.com" target="_blank" class="prefetch">Mempool</a>
-            <a href="https://bitview.space/" target="_blank" class="prefetch">Bitview.space</a>
+            <a href="https://lightning.btcforplebs.com" target="_blank" class="prefetch">Lightning <span class="status-emoji"></span></a>
+            <a href="https://mempool.btcforplebs.com" target="_blank" class="prefetch">Mempool <span class="status-emoji"></span></a>
+            <a href="https://bitview.space/" target="_blank" class="prefetch">Bitview.space ⚪️</span></a>
         </div>
         
         <button class="button" id="nostr-folder-btn" onclick="toggleFolder('folder1', 'nostr-folder-btn')">Use Nostr <span style="color: #F7931A;">↓</span></button>
         <div class="links" id="folder1">
-            <a href="https://nostrudel.btcforplebs.com" target="_blank" class="prefetch">Nostrudel</a>
-            <a href="https://nosotros.btcforplebs.com" target="_blank" class="prefetch">Nosotros</a>
-            <a href="https://bloom.btcforplebs.com" target="_blank" class="prefetch">Bloom</a>
-            <a href="https://btcforplebs.com/relay" target="_blank" class="prefetch">Relay</a>
-            <a href="https://nostrapps.com" target="_blank">NostrApps.com</a>
+            <a href="https://nostrudel.btcforplebs.com" target="_blank" class="prefetch">Nostrudel <span class="status-emoji"></span></a>
+            <a href="https://nosotros.btcforplebs.com" target="_blank" class="prefetch">Nosotros <span class="status-emoji"></span></a>
+            <a href="https://bloom.btcforplebs.com" target="_blank" class="prefetch">Bloom <span class="status-emoji"></span></a>
+            <a href="https://relay.btcforplebs.com" target="_blank" class="prefetch">Relay <span class="status-emoji"></span></a>
+            <a href="https://nostrapps.com" target="_blank">NostrApps.com ⚪️</a>
         </div>
         <button class="button" id="cashu-folder-btn" onclick="toggleFolder('folder3', 'cashu-folder-btn')">Use Cashu <span style="color: #F7931A;">↓</span></button>
         <div class="links" id="folder3">
-            <a href="https://cashu.btcforplebs.com" class="prefetch">Cashu Web App</a>
-            <a href="https://macadamia.cash" class="prefetch">Macadamia(iOS)</a>
-            <a href="https://minibits.cash" class="prefetch">Minibits(Android)</a>
+            <a href="https://cashu.btcforplebs.com" class="prefetch">Cashu Web App <span class="status-emoji"></span></a>
+            <a href="https://macadamia.cash" class="prefetch">Macadamia (iOS) ⚪️</a>
+            <a href="https://minibits.cash" class="prefetch">Minibits (Android) ⚪️</a>
         </div>
 
-        <a href="https://live.btcforplebs.com" class="button" class="prefetch">BTCforPlebs Live</a>
+        <a href="https://live.btcforplebs.com" class="button" class="prefetch">BTCforPlebs Live<span class="status-emoji"></span></a> 
         <br></br>
     </div>
     
 
 <script>
-function toggleFolder(folderId, buttonId) {
-  const folder = document.getElementById(folderId);
-  const button = document.getElementById(buttonId);
-  if (!folder || !button) return;
 
-  // Toggle visibility
-  if (folder.style.display === "none" || folder.style.display === "") {
-    folder.style.display = "block";
-    button.innerHTML = button.innerHTML.replace("↓", "↑");
-  } else {
-    folder.style.display = "none";
-    button.innerHTML = button.innerHTML.replace("↑", "↓");
-  }
-}</script>
+</script>
 
 <div id="footer"></div>
 </body>
