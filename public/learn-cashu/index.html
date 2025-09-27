@@ -107,5 +107,17 @@
 </div>
 <div id="footer"></div>
 <a href="#top" title="Back to Top">🔝</a>
+
+<script>  
+// --- 2. Dropdown navigation ---------------------------------------------
+  window.navigateToSection = function (select) {
+    const sectionId = select.value;
+    if (sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };</script>
 </body>
 </html>

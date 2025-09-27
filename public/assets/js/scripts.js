@@ -1,105 +1,64 @@
-// Folder Toggle Function
-document.addEventListener('DOMContentLoaded', () => {
-  function toggleFolder(folderId, buttonId) {
-    const folder = document.getElementById(folderId);
-    const button = document.getElementById(buttonId);
+// public/assets/js/scripts.js
+// ---------------------------------------------
+// 1. Global toggle function – now accessible from the HTML onclick
+// 2. Properly closed DOMContentLoaded
+// 3. Minor style helper (display toggling)
+// ---------------------------------------------
 
-    // Close other folders and deactivate buttons
-    document.querySelectorAll('.links').forEach(link => {
-      if (link.id !== folderId) {
-        link.style.display = 'none';
-      }
-    });
-    document.querySelectorAll('.button').forEach(btn => {
-      if (btn.id !== buttonId) {
-        btn.classList.remove('active');
-      }
-    });
 
-    // Toggle the selected folder
-    if (folder.style.display === 'block') {
-      folder.style.display = 'none';
-      button.classList.remove('active');
-    } else {
-      folder.style.display = 'block';
-      button.classList.add('active');
-    }
-}
 
-function navigateToSection(select) {
-    const sectionId = select.value;
-    if (sectionId) {
-        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
-    }
-}
-
-  // Function to prefetch a URL
-  function prefetch(url) {
-    const link = document.createElement('link');
-    link.rel = 'prefetch';
-    link.href = url;
-    document.head.appendChild(link);
-}
-
-  // Add event listeners to your links
-  const links = document.querySelectorAll('a.prefetch');
-
-links.forEach(link => {
-    link.addEventListener('mouseenter', () => {
-      const url = link.href; // Get the link URL
-      prefetch(url); // Call prefetch function
-    });
-});
-
-  // Footer Loader and Event Listeners
+  // --- 4. Load Footer and QR Code Toggle Logic ----------------------------
   fetch('/parts/footer.html')
     .then(response => response.text())
     .then(data => {
-        document.getElementById('footer').innerHTML = data;
+      const footer = document.getElementById('footer');
+      if (!footer) return;
 
-      // Attach event listeners after footer is loaded
+      footer.innerHTML = data;
+
       const onChainButton = document.getElementById('onChainButton');
       const lightningButton = document.getElementById('lightningButton');
       const qrCodes = document.getElementById('qrCodes');
       const onChainQRCode = document.getElementById('onChainQRCode');
       const lightningQRCode = document.getElementById('lightningQRCode');
 
-      // Initially hide the QR codes section
-      qrCodes.style.display = 'none';
+      if (qrCodes) qrCodes.style.display = 'none';
 
-      onChainButton.addEventListener('click', function () {
-        // Toggle visibility of On-Chain QR Code
-        const isOnChainVisible = onChainQRCode.style.display === 'block';
-        qrCodes.style.display = 'block'; // Show QR codes section
-        onChainQRCode.style.display = isOnChainVisible ? 'none' : 'block'; // Toggle On-Chain
-        lightningQRCode.style.display = 'none'; // Hide Lightning QR code
-      });
+      if (onChainButton && lightningButton && qrCodes && onChainQRCode && lightningQRCode) {
+        onChainButton.addEventListener('click', function () {
+          const isOnChainVisible = onChainQRCode.style.display === 'block';
+          qrCodes.style.display = 'block';
+          onChainQRCode.style.display = isOnChainVisible ? 'none' : 'block';
+          lightningQRCode.style.display = 'none';
+        });
 
-      lightningButton.addEventListener('click', function () {
-        // Toggle visibility of Lightning QR Code
-        const isLightningVisible = lightningQRCode.style.display === 'block';
-        qrCodes.style.display = 'block'; // Show QR codes section
-        lightningQRCode.style.display = isLightningVisible ? 'none' : 'block'; // Toggle Lightning
-        onChainQRCode.style.display = 'none'; // Hide On-Chain QR code
-      });
+        lightningButton.addEventListener('click', function () {
+          const isLightningVisible = lightningQRCode.style.display === 'block';
+          qrCodes.style.display = 'block';
+          lightningQRCode.style.display = isLightningVisible ? 'none' : 'block';
+          onChainQRCode.style.display = 'none';
+        });
+      }
     })
     .catch(error => console.error('Error loading footer:', error));
 
+  // --- 5. Fetch and Display Last Update from GitHub -----------------------
   fetch('https://api.github.com/repos/btcforplebs/BTCforPlebs.com/commits/main')
     .then(response => response.json())
     .then(data => {
-      const lastUpdate = new Date(data.commit.author.date); // Commit date
+      const lastUpdate = new Date(data.commit.author.date);
       const formattedDate = lastUpdate.toLocaleDateString();
       const formattedTime = lastUpdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      // Update the text content of the last-updated-text element
-      document.getElementById('last-updated-text').textContent = `Website last updated: ${formattedDate} ${formattedTime}`;
+      const updateText = document.getElementById('last-updated-text');
+      if (updateText) {
+        updateText.textContent = `Website last updated: ${formattedDate} ${formattedTime}`;
+      }
     })
     .catch(error => {
       console.error('Error fetching last update:', error);
-      document.getElementById('last-updated-text').textContent = 'Last update: Error fetching data.';
+      const updateText = document.getElementById('last-updated-text');
+      if (updateText) {
+        updateText.textContent = 'Last update: Error fetching data.';
+      }
     });
-
-
-});
-
