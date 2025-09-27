@@ -48,7 +48,12 @@
     <div id="footer"></div>
     
     <a href="#top" title="Back to Top">🔝</a>
-
+    <script>function navigateToSection(select) {
+    const sectionId = select.value;
+    if (sectionId) {
+        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+    }
+}</script>
 </body>
 </html>
 

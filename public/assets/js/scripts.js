@@ -26,32 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 }
 
-function navigateToSection(select) {
-    const sectionId = select.value;
-    if (sectionId) {
-        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
-    }
-}
 
-  // Function to prefetch a URL
-  function prefetch(url) {
-    const link = document.createElement('link');
-    link.rel = 'prefetch';
-    link.href = url;
-    document.head.appendChild(link);
-}
 
-  // Add event listeners to your links
-  const links = document.querySelectorAll('a.prefetch');
-
-links.forEach(link => {
-    link.addEventListener('mouseenter', () => {
-      const url = link.href; // Get the link URL
-      prefetch(url); // Call prefetch function
-    });
-});
-
-  // Footer Loader and Event Listeners
+// Footer Loader and Event Listeners
   fetch('/parts/footer.html')
     .then(response => response.text())
     .then(data => {
