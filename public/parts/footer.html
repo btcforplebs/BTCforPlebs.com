@@ -1,6 +1,20 @@
 <link rel="stylesheet" href="/assets/css/main.css">
 <footer>
     <script src="/assets/js/scripts.js"></script>
+
+
+<style>
+  .nostr-icon {
+    width: 1em;                     /* same size as the other icons */
+    height: 1em;
+    background-color: currentColor; /* inherits the surrounding text colour */
+
+    /* mask the PNG – requires a PNG with a transparent background */
+    mask: url("https://i.nostr.build/rEzdEtwDi8VDpQiX.png") no-repeat center / contain;
+    -webkit-mask: url("https://i.nostr.build/rEzdEtwDi8VDpQiX.png") no-repeat center / contain;
+  }
+</style>
+
     <h3>We operate on solely on Bitcoin donations; from a pleb just like you!</h3>
 
                        <!-- Button Section -->
@@ -19,13 +33,14 @@
                    <!-- Social Links Section -->
     <div class="social-icons">
         <a href="https://nostrudel.ninja/#/u/npub1w4rz7n0vunaau499xh86p84s6v5mmgys48p0nmttt7w36takc9dsf4382j" target="_blank" title="Nostr" class="prefetch">
-            <i class="fa-solid fa-link"></i>
+            <div class="nostr-icon"></div>
+        <a href="https://x.com/btcforplebs" target="_blank" title="X" class="prefetch">
+            <i class="fa-brands fa-twitter"></i>
         </a>
         <a href="https://youtube.com/@btcforplebs" target="_blank" title="YouTube" class="prefetch">
             <i class="fa-brands fa-youtube"></i>
-        </a>
-        <a href="https://x.com/btcforplebs" target="_blank" title="X" class="prefetch">
-            <i class="fa-brands fa-twitter"></i>
+        <a href="https://twitch.tv/btcforplebs" target="_blank" title="Twitch" class="prefetch">
+            <i class="fa-brands fa-twitch"></i>
         </a>
         <a href="btcforplebs@gmail.com" target="_blank" title="Email" class="prefetch">
             <i class="fa-solid fa-envelope"></i>
