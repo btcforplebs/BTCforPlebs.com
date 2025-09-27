@@ -4,7 +4,7 @@ let linkStatuses = {};
 // Fetch statuses on page load
 document.addEventListener('DOMContentLoaded', () => {
     // Fetch statuses immediately but keep folders closed
-    fetch("http://localhost:5252/api/link-status")
+    fetch("https://services.btcforplebs.com/api/link-status")
         .then(res => res.json())
         .then(statuses => {
             linkStatuses = statuses; // Store for later use
@@ -43,7 +43,7 @@ function toggleFolder(folderId, buttonId) {
         if (Object.keys(linkStatuses).length > 0) {
             updateFolderStatuses(folder, linkStatuses);
         } else {
-            fetch("http://localhost:5252/api/link-status")
+            fetch("https://services.btcforplebs.com/api/link-status")
                 .then(res => res.json())
                 .then(statuses => {
                     linkStatuses = statuses;
@@ -60,7 +60,7 @@ async function init() {
     try {
         // Fetch the status first
         console.log("Fetching statuses...");
-        const response = await fetch("http://localhost:5252/api/link-status");
+        const response = await fetch("https://services.btcforplebs.com/api/link-status");
         const statuses = await response.json();
         console.log("Got statuses:", statuses);
 

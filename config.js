@@ -4,6 +4,10 @@ module.exports = {
     allowedOrigins: [
         'http://localhost:5252',
         'https://btcforplebs.com',
-        'https://www.btcforplebs.com'
+        'https://www.btcforplebs.com',
+        'http://btcforplebs.com',
+        'http://www.btcforplebs.com',
+        'https://services.btcforplebs.com',
+        'http://services.btcforplebs.com'
     ]
 };
