@@ -19,19 +19,39 @@ const links = [
 ];
 
 app.use((req, res, next) => {
-  console.log("Received request:", req.url);
-  console.log("Request origin:", req.headers.origin);
-  console.log("Allowed origins:", config.allowedOrigins);
+  console.log("Received request:", req.method, req.url);
+  console.log("Request headers:", req.headers);
+  
   const origin = req.headers.origin;
-  if (config.allowedOrigins.includes(origin)) {
+  
+  // Allow requests with no origin (like mobile apps or curl requests)
+  if (!origin) {
+    console.log("No origin in request - allowing access");
+    res.header("Access-Control-Allow-Origin", "*");
+  }
+  // Allow requests from configured origins
+  else if (config.allowedOrigins.includes(origin)) {
     console.log("Origin allowed:", origin);
     res.header("Access-Control-Allow-Origin", origin);
   } else {
-    console.log("Origin not allowed:", origin);
+    console.log("Origin not in allowed list:", origin);
   }
+
+  // Always set these headers
   res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type");
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
   next();
+});
+
+// Test endpoint to verify server is responding
+app.get("/", (req, res) => {
+  res.json({ status: "Server is running" });
 });
 
 app.get("/api/link-status", async (req, res) => {
