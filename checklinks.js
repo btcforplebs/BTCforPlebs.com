@@ -14,7 +14,6 @@ const links = [
   "https://nosotros.btcforplebs.com",
   "https://mint.btcforplebs.com",
   "https://cashu.btcforplebs.com",
-  "https://nostrapps.com",
   // Add more links as needed
 ];
 

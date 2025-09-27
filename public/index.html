@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +21,7 @@
     <!-- scripts -->
 
     <script src="/assets/js/home.js"></script>
+    <script src="/assets/js/scripts.js"></script>
     <link rel="stylesheet" href="/assets/css/main.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -31,43 +34,102 @@
         <h3>A place to help ordinary people learn about Bitcoin</h3>
         <img src="/images/btcforplebs_profile.gif" alt="Profile Picture" class="profile-picture">
 
-        <div class="button-div">
-        <!-- Buttons -->
-            <a href="/learn-bitcoin" class="button" class="prefetch">Learn About Bitcoin</a>
-            <a href="/learn-nostr" class="button" class="prefetch">Learn About Nostr</a>
-            <a href="/learn-cashu" class="button" class="prefetch">Learn About Cashu</a>
-            <a href="/bitcoin-and-the-bible" class="button" class="prefetch">Bitcoin & The Bible</a>
-        </div>
-        <button class="button" id="bitcoin-folder-btn" onclick="toggleFolder('folder2', 'bitcoin-folder-btn')">Use Bitcoin <span style="color: #F7931A;">↓</span></button>
-        <div class="links" id="folder2">
-            <a href="https://lightning.btcforplebs.com" target="_blank" class="prefetch">Lightning <span class="status-emoji"></span></a>
-            <a href="https://mempool.btcforplebs.com" target="_blank" class="prefetch">Mempool <span class="status-emoji"></span></a>
-            <a href="https://bitview.space/" target="_blank" class="prefetch">Bitview.space ⚪️</span></a>
-        </div>
-        
-        <button class="button" id="nostr-folder-btn" onclick="toggleFolder('folder1', 'nostr-folder-btn')">Use Nostr <span style="color: #F7931A;">↓</span></button>
-        <div class="links" id="folder1">
-            <a href="https://nostrudel.btcforplebs.com" target="_blank" class="prefetch">Nostrudel <span class="status-emoji"></span></a>
-            <a href="https://nosotros.btcforplebs.com" target="_blank" class="prefetch">Nosotros <span class="status-emoji"></span></a>
-            <a href="https://bloom.btcforplebs.com" target="_blank" class="prefetch">Bloom <span class="status-emoji"></span></a>
-            <a href="https://relay.btcforplebs.com" target="_blank" class="prefetch">Relay <span class="status-emoji"></span></a>
-            <a href="https://nostrapps.com" target="_blank">NostrApps.com ⚪️</a>
-        </div>
-        <button class="button" id="cashu-folder-btn" onclick="toggleFolder('folder3', 'cashu-folder-btn')">Use Cashu <span style="color: #F7931A;">↓</span></button>
-        <div class="links" id="folder3">
-            <a href="https://cashu.btcforplebs.com" class="prefetch">Cashu Web App <span class="status-emoji"></span></a>
-            <a href="https://macadamia.cash" class="prefetch">Macadamia (iOS) ⚪️</a>
-            <a href="https://minibits.cash" class="prefetch">Minibits (Android) ⚪️</a>
-        </div>
+<!-- Learn Links (unchanged) -->
+<a href="/learn-bitcoin" class="button prefetch">Learn About Bitcoin</a>
+<a href="/learn-nostr" class="button prefetch">Learn About Nostr</a>
+<a href="/learn-cashu" class="button prefetch">Learn About Cashu</a>
+<a href="/bitcoin-and-the-bible" class="button prefetch">Bitcoin & The Bible</a>
+
+<!-- Bitcoin Links -->
+<button class="button" id="bitcoin-folder-btn" onclick="toggleFolder('folder2', 'bitcoin-folder-btn')">Use Bitcoin <span style="color: #F7931A;">↓</span></button>
+<div class="links" id="folder2">
+  <a href="https://lightning.btcforplebs.com" target="_blank" class="prefetch">
+    Lightning <span class="status-emoji" data-url="https://lightning.btcforplebs.com">⏳</span>
+  </a>
+  <a href="https://mempool.btcforplebs.com" target="_blank" class="prefetch">
+    Mempool <span class="status-emoji" data-url="https://mempool.btcforplebs.com">⏳</span>
+  </a>
+  <a href="https://bitview.space/" target="_blank" class="prefetch">
+    Bitview.space ⚪️
+  </a>
+</div>
+
+<!-- Nostr Links -->
+<button class="button" id="nostr-folder-btn" onclick="toggleFolder('folder1', 'nostr-folder-btn')">Use Nostr <span style="color: #F7931A;">↓</span></button>
+<div class="links" id="folder1">
+  <a href="https://nostrudel.btcforplebs.com" target="_blank" class="prefetch">
+    Nostrudel <span class="status-emoji" data-url="https://nostrudel.btcforplebs.com">⏳</span>
+  </a>
+  <a href="https://nosotros.btcforplebs.com" target="_blank" class="prefetch">
+    Nosotros <span class="status-emoji" data-url="https://nosotros.btcforplebs.com">⏳</span>
+  </a>
+  <a href="https://bloom.btcforplebs.com" target="_blank" class="prefetch">
+    Bloom <span class="status-emoji" data-url="https://bloom.btcforplebs.com">⏳</span>
+  </a>
+  <a href="https://relay.btcforplebs.com" target="_blank" class="prefetch">
+    Relay <span class="status-emoji" data-url="https://relay.btcforplebs.com">⏳</span>
+  </a>
+  <a href="https://nostrapps.com" target="_blank">
+    NostrApps.com ⚪️
+  </a>
+</div>
+
+<!-- Cashu Links -->
+<button class="button" id="cashu-folder-btn" onclick="toggleFolder('folder3', 'cashu-folder-btn')">Use Cashu <span style="color: #F7931A;">↓</span></button>
+<div class="links" id="folder3">
+  <a href="https://cashu.btcforplebs.com" class="prefetch">
+    Cashu Web App <span class="status-emoji" data-url="https://cashu.btcforplebs.com">⏳</span>
+  </a>
+  <a href="https://macadamia.cash" class="prefetch">
+    Macadamia (iOS) ⚪️
+  </a>
+  <a href="https://minibits.cash" class="prefetch">
+    Minibits (Android) ⚪️
+  </a>
+</div>
 
         <a href="https://live.btcforplebs.com" class="button" class="prefetch">BTCforPlebs Live<span class="status-emoji"></span></a> 
         <br></br>
     </div>
     
-
 <script>
+  document.addEventListener('DOMContentLoaded', init);
 
+  const apiEndpoint = "http://localhost:5252/api/link-status";
+
+  async function init() {
+    try {
+      console.log("🔄 Fetching statuses from:", apiEndpoint);
+      const response = await fetch(apiEndpoint);
+      const statuses = await response.json();
+      console.log("✅ Received statuses:", statuses);
+
+      document.querySelectorAll(".status-emoji[data-url]").forEach(span => {
+        const url = span.dataset.url;
+        console.log("🔍 Checking span for:", url);
+
+        if (!url) {
+          console.warn("⚠️ Span missing data-url:", span);
+          return;
+        }
+
+        const status = statuses[url];
+
+        if (!status) {
+          console.warn(`⚠️ No status found in JSON for: ${url}`);
+        } else {
+          const emoji = status === "online" ? "🟢" : "🔴";
+          console.log(`✅ ${url} is ${status}, setting emoji: ${emoji}`);
+          span.textContent = `${emoji} `;
+          span.style.display = 'inline-block';
+        }
+      });
+    } catch (error) {
+      console.error("❌ Error fetching or processing statuses:", error);
+    }
+  }
 </script>
+
 
 <div id="footer"></div>
 </body>
