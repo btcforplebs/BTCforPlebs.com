@@ -15,6 +15,8 @@ const links = [
   "https://mint.btcforplebs.com",
   "https://cashu.btcforplebs.com",
   "https://live.btcforplebs.com",
+  "https://explorer.btcforplebs.com",
+  
 ];
 
 // Optional: Only allow internal requests if you're not exposing this publicly
