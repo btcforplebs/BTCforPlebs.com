@@ -39,7 +39,7 @@
 <a href="/bitcoin-and-the-bible" class="button prefetch">Bitcoin & The Bible</a>
 
 <!-- Bitcoin Links -->
-<button class="button" id="bitcoin-folder-btn" onclick="toggleFolder('folder2', 'bitcoin-folder-btn')">Use Bitcoin <span style="color: #F7931A;">-</span></button>
+<button class="button" id="bitcoin-folder-btn" onclick="toggleFolder('folder2', 'bitcoin-folder-btn')">Use Bitcoin <span style="color: #F7931A;">←</span></button>
 <div class="links" id="folder2">
   <a href="https://lightning.btcforplebs.com" target="_blank" class="prefetch">Lightning <span class="status-emoji" data-url="https://lightning.btcforplebs.com">⏳</span></a>
   <a href="https://mempool.btcforplebs.com" target="_blank" class="prefetch">Mempool <span class="status-emoji" data-url="https://mempool.btcforplebs.com">⏳</span></a>
@@ -48,20 +48,20 @@
 </div>
 
 <!-- Nostr Links -->
-<button class="button" id="nostr-folder-btn" onclick="toggleFolder('folder1', 'nostr-folder-btn')">Use Nostr <span style="color: #F7931A;">-</span></button>
+<button class="button" id="nostr-folder-btn" onclick="toggleFolder('folder1', 'nostr-folder-btn')">Use Nostr <span style="color: #F7931A;">←</span></button>
 <div class="links" id="folder1">
   <a href="https://nostrudel.btcforplebs.com" target="_blank" class="prefetch">Nostrudel <span class="status-emoji" data-url="https://nostrudel.btcforplebs.com">⏳</span></a>
   <a href="https://nosotros.btcforplebs.com" target="_blank" class="prefetch">Nosotros <span class="status-emoji" data-url="https://nosotros.btcforplebs.com">⏳</span></a>
   <a href="https://bloom.btcforplebs.com" target="_blank" class="prefetch">Bloom <span class="status-emoji" data-url="https://bloom.btcforplebs.com">⏳</span></a>
-  <a href="https://btcforplebs.com/relay" target="_blank" class="prefetch">Relay <span class="status-emoji" data-url="https://relay.btcforplebs.com">⏳</span></a>
+  <a href="/relay" target="_blank" class="prefetch">Relay <span class="status-emoji" data-url="https://relay.btcforplebs.com">⏳</span></a>
   <a href="https://nostrapps.com" target="_blank">NostrApps.com ⚪️ </a>
 </div>
 
 <!-- Cashu Links -->
-<button class="button" id="cashu-folder-btn" onclick="toggleFolder('folder3', 'cashu-folder-btn')">Use Cashu <span style="color: #F7931A;">-</span></button>
+<button class="button" id="cashu-folder-btn" onclick="toggleFolder('folder3', 'cashu-folder-btn')">Use Cashu <span style="color: #F7931A;">←</span></button>
 <div class="links" id="folder3">
   <a href="https://cashu.btcforplebs.com" class="prefetch">Cashu Web App <span class="status-emoji" data-url="https://cashu.btcforplebs.com">⏳</span></a>
-  <a href="https://mint.btcforplebs.com" class="prefetch">Cashu Mint <span class="status-emoji" data-url="https://mint.btcforplebs.com">⏳</span></a>
+  <a href="/mint" class="prefetch">Cashu Mint <span class="status-emoji" data-url="https://mint.btcforplebs.com">⏳</span></a>
   <a href="https://macadamia.cash" class="prefetch">Macadamia (iOS) ⚪️ </a>
   <a href="https://minibits.cash" class="prefetch">Minibits (Android) ⚪️ </a>
 </div>
@@ -121,11 +121,11 @@ document.addEventListener('DOMContentLoaded', init);
 
     if (folder.style.display === "none" || folder.style.display === "") {
         folder.style.display = "block";
-        button.innerHTML = button.innerHTML.replace("-", "↓");
+        button.innerHTML = button.innerHTML.replace("←", "↓");
         
     } else {
         folder.style.display = "none";
-        button.innerHTML = button.innerHTML.replace("↓", "-");
+        button.innerHTML = button.innerHTML.replace("↓", "←");
     }
   }
 </script>
