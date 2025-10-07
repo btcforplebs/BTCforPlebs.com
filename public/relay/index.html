@@ -3,45 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BTCforPlebs Nostr Relay - The WebSocket Party Hub</title>
-  <meta name="description" content="A playful introduction to Nostr relays with a short, comically light hearted TOS.">  
-  <link rel="stylesheet" href="/public/assets/css/main.css">
+  <title>BTCforPlebs – Nostr Relay (Relay Page)</title>
+  <meta name="description" content="Add the BTCforPlebs Nostr relay to your client and discover fast Nostr experiences.">
+  <link rel="stylesheet" href="/assets/css/main.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
   <style>
-    /* Override a bit to make it super retro */
-    body {font-family: "Courier New", monospace; background:#111; color:#ecf0f1;}
-    h1{color:#f39c12;}
-    .center{max-width:800px;margin:auto;padding:2rem;text-align:left;background:rgba(0,0,0,.8);border-radius:8px;}
-    .btn{display:inline-block;margin:10px 0;padding:.7rem 1.5rem;background:#e67e22;color:#fff;border-radius:4px;text-decoration:none;font-weight:bold;}    
+    /* Use the same vars as the rest of the site */
+    body {font-family: "Lucida Grande",Arial,sans-serif; color: var(--text-color); background: var(--background-color);}
+    .content {max-width: 90%; margin: 0 auto; padding:20px;}
+    /* Make a two column grid for larger screens */
+    @media(min-width:768px) {
+      .grid {display:grid; grid-template-columns:2fr 1fr; gap:2rem;}
+    }
+    .title {text-align:center;margin-bottom:1rem;}
+    .btn {display:inline-block;padding:10px 20px;margin:5px 0; background:linear-gradient(to bottom,var(--button-bg-top),var(--button-bg-bottom)); border:1px solid var(--button-border); border-radius:8px; color:var(--text-color); text-decoration:none; transition:background .2s;}
+    .btn:hover {background:linear-gradient(to bottom,var(--button-hover-bg-top),var(--button-hover-bg-bottom));}
+    .section {margin-bottom:2rem;}
+    ul {list-style:disc; margin-left:1.5rem;}
   </style>
 </head>
 <body>
-  <div class="center">
-    <h1>Nostr Relays -- The WebSocket Party Hub</h1>
-    <p>Welcome, brave soul! You've stumbled upon the <strong>nostr</strong> relay section of BTCforPlebs. Here we keep the gossip, memes, and news flowing faster than a Bitcoin transaction on a sunny Tuesday.</p>
-    <h2>Quick Links</h2>
-    <ul>
-      <li><a href="https://relay.btcforplebs.com" class="btn">wss://relay.btcforplebs.com</a></li>
-      <li><a href="/learn-nostr" class="btn">Learn About Nostr</a></li>
-      <li><a href="https://nostrudel.btcforplebs.com" class="btn">Use a Nostr Client</a></li>
-      <li><a href="https://nostrapps.com" class="btn">More Nostr Apps</a></li>
-    </ul>
-    <h2>TOS? Because We're Kind of Legit</h2>
-    <p><strong>By visiting this page you automatically consent to the following:</strong></p>
-    <ol>
-      <li>I <em>can't</em> guarantee that the relay will be online -- it's a bit like a party in a haunted house: sometimes the lights go out.</li>
-      <li>All <strong>messages are public and broadcast to every relay in the network</strong> unless you explicitly set privacy on your client.</li>
-      <li>Do <strong>not</strong> post illegal nonsense or sensitive personal info; your cat's birthday is fine though.</li>
-      <li>We are not responsible for lost keys, spam, or that one spammer who keeps following and unfollwing for attention.</li>
-      <li>If you;re still a kid, <strong>do not</strong> sign any agreements -- let your mom run the server.</li>
-    </ol>
-    <p>Feel free to <a href="mailto:btcforplebs@gmail.com" class="btn">contact us</a> if you're confused. We may not laugh at your puns, but we will keep your notes as safe as we can.</p>
-
-    <h2>Stay Updated</h2>
-    <p>Follow BTCforPlebs on <a href="https://nostrudel.btcforplebs.com/u/npub1w4rz7n0vunaau499xh86p84s6v5mmgys48p0nmttt7w36takc9dsf4382j" class="btn">Nostr</a> or <a href="https://x.com/btcforplebs" class="btn">X</a> or <a href="https://youtube.com/@btcforplebs" class="btn">YouTube</a> for the latest</p>
+  <div class="content">
+    <h1 class="title">BTCforPlebs Nostr Relay</h1>
+    <div class="grid">
+      <div>
+        <section class="section" id="howto">
+          <h2>How to add the Relay</h2>
+          <p>Insert the relay URL below into the "Relays" settings of your preferred Nostr client.</p>
+          <div style="text-align:center; margin:1rem 0;">
+            <span class="btn" style="pointer-events:none; background:var(--button-bg-top-active); border:1px solid var(--button-border);">wss://relay.btcforplebs.com</span>
+          </div>
+          <p>Below are some quick steps for popular clients.</p>
+          <ul>
+            <li><strong>Nostr Relay Web UI:</strong> Add “<code>wss://relay.btcforplebs.com</code>” then tick “Enable”.</li>
+            <li><strong>Nostrudel:</strong> Settings → Relays → Add Relay → paste URL → Save.</li>
+            <li><strong>Other Apps (Nostrify, AT, etc.):</strong> Typically share an "Add Relay" or “Relay URL” field in the settings.</li>
+          </ul>
+        </section>
+        <section class="section" id="quicklinks">
+          <h3>Quick Links</h3>
+          <div style="text-align:center;">
+            <a href="https://relay.btcforplebs.com" class="btn">Relay Web Socket</a>
+            <a href="/learn-nostr" class="btn">Learn About Nostr</a>
+            <a href="https://nostrudel.btcforplebs.com" class="btn">Use a Nostr Client</a>
+            <a href="https://nostrapps.com" class="btn">More Nostr Apps</a>
+          </div>
+        </section>
+        <section class="section" id="tos">
+          <h2>TOS &amp; Notes</h2>
+          <p><strong>By using this relay you consent to:</strong></p>
+          <ul>
+            <li>I <em>can't</em> guarantee uptime – community node.</li>
+            <li>Messages are public unless you set privacy.</li>
+            <li>No illegal or sensitive content.</li>
+            <li>No responsibility for lost keys or spam.</li>
+            <li>Minors should supervise.</li>
+          </ul>
+          <p>Questions? <a href="mailto:relay@btcforplebs.com" class="btn">Contact us</a></p>
+        </section>
+      </div>
+      <aside class="section" id="updates">
+        <h2>Stay Updated</h2>
+        <p>Follow BTCforPlebs across all channels.</p>
+        <div style="display:flex; flex-direction:column; gap:.5rem;">
+          <a href="https://nostrudel.btcforplebs.com/u/npub1w4rz7n0vunaau499xh86p84s6v5mmgys48p0nmttt7w36takc9dsf4382j" class="btn">Nostr (@npub1w4rz...)</a>
+          <a href="https://x.com/btcforplebs" class="btn">X</a>
+          <a href="https://youtube.com/@btcforplebs" class="btn">YouTube</a>
+        </div>
+        <h3>Last Update</h3>
+        <p id="last-updated-text">Fetching…</p>
+      </aside>
+    </div>
   </div>
-  <footer style="text-align:center;margin-top: 2rem;color:#777;">
-    2025 BTC for Plebs The only relay that's actually reliable.
-  </footer>
+  <footer id="footer"></footer>
+  <script src="/assets/js/scripts.js"></script>
 </body>
 </html>
