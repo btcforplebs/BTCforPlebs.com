@@ -17,6 +17,7 @@ const links = [
   "https://live.btcforplebs.com",
   "https://explorer.btcforplebs.com",
   "https://nsec.btcforplebs.com",
+  "https://flotilla.btcforplebs.com"
 ];
 
 // Optional: Only allow internal requests if you're not exposing this publicly
