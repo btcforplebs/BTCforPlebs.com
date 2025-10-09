@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BTCforPlebs Nostr Relay - The WebSocket Party Hub</title>
   <meta name="description" content="A playful introduction to Nostr relays with a short, comically light hearted TOS.">  
-  <link rel="stylesheet" href="/Users/logandetty/BTCforPlebs.com/public/assets/css/main.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
   <style>
     /* Override a bit to make it super retro */
     body {font-family: "Courier New", monospace; background:#111; color:#ecf0f1;}
-    h1{color:#f39c12;}
+    a {color:#8e30eb;}
+    h1{color:#8e30eb;}
     .center{max-width:800px;margin:auto;padding:2rem;text-align:left;background:rgba(0,0,0,.8);border-radius:8px;}
-    .btn{display:inline-block;margin:10px 0;padding:.7rem 1.5rem;background:#e67e22;color:#fff;border-radius:4px;text-decoration:none;font-weight:bold;}    
+    .btn{display:inline-block;margin:10px 0;padding:.7rem 1.5rem;background:#8e30eb;color:#fff;border-radius:4px;text-decoration:none;font-weight:bold;}    
   </style>
 </head>
 <body>
@@ -21,27 +22,46 @@
     <p>Welcome, brave soul! You've stumbled upon the <strong>nostr</strong> relay section of BTCforPlebs. Here we keep the gossip, memes, and news flowing faster than a Bitcoin transaction on a sunny Tuesday.</p>
     <h2>Quick Links</h2>
     <ul>
-      <li><a href="https://relay.btcforplebs.com" class="btn">wss://relay.btcforplebs.com</a></li>
+      <li><a href="#" class="btn" onclick="copyToClipboard('wss://relay.btcforplebs.com'); return false;">wss://relay.btcforplebs.com</a>
+        <br>Join the party! Enter this as a relay to all your favorite nostr clients.</br></li>
+      <li><a href="https://nostrudel.btcforplebs.com" class="btn">Use Nostr Client Nostrudel</a>
+        <br>A client that has it all! Like a swiss army knife for nostr; Nostrudel is a client that you can use for everything </br></li>
       <li><a href="/learn-nostr" class="btn">Learn About Nostr</a></li>
-      <li><a href="https://nostrudel.btcforplebs.com" class="btn">Use a Nostr Client</a></li>
+
       <li><a href="https://nostrapps.com" class="btn">More Nostr Apps</a></li>
     </ul>
     <h2>TOS? Because We're Kind of Legit</h2>
-    <p><strong>By visiting this page you automatically consent to the following:</strong></p>
+    <p><strong>By using our relay you consent to the following:</strong></p>
     <ol>
       <li>I <em>can't</em> guarantee that the relay will be online -- it's a bit like a party in a haunted house: sometimes the lights go out.</li>
-      <li>All <strong>messages are public and broadcast to every relay in the network</strong> unless you explicitly set privacy on your client.</li>
+      <li>All <strong>messages are public and broadcast to (nearly) every relay in the network</strong> unless you explicitly set privacy on your client.</li>
       <li>Do <strong>not</strong> post illegal nonsense or sensitive personal info; your cat's birthday is fine though.</li>
       <li>We are not responsible for lost keys, spam, or that one spammer who keeps following and unfollwing for attention.</li>
-      <li>If you;re still a kid, <strong>do not</strong> sign any agreements -- let your mom run the server.</li>
+      <li>If you're still a kid just let your mom run the server.</li>
     </ol>
-    <p>Feel free to <a href="mailto:btcforplebs@gmail.com" class="btn">contact us</a> if you're confused. We may not laugh at your puns, but we will keep your keys as safe as we can.</p>
+    <p>Feel free to start a chat with us if you're confused. We may not laugh at your puns, but we will keep your notes as safe as we can.</p>
 
     <h2>Stay Updated</h2>
-    <p>Follow BTCforPlebs on <a href="https://nostrudel.btcforplebs.com/u/npub1w4rz7n0vunaau499xh86p84s6v5mmgys48p0nmttt7w36takc9dsf4382j" class="btn">Nostr</a> or <a href="https://x.com/btcforplebs" class="btn">X</a> or <a href="https://youtube.com/@btcforplebs" class="btn">YouTube</a> for the latest</p>
+    <p>Follow BTCforPlebs on <a href="https://nostrudel.btcforplebs.com/u/npub1w4rz7n0vunaau499xh86p84s6v5mmgys48p0nmttt7w36takc9dsf4382j">Nostr</a> or <a href="https://youtube.com/@btcforplebs">YouTube</a> for the latest</p>
   </div>
+
+<script src="https://btcforplebs.com/nostr-chat-widget.js" data-nostr-pubkey="75462f4dece4fbde54a535cfa09eb0d329bda090a9c2f9ed6b5f9d1d2fb6c15b" data-brand-name="Chat with BTCforPlebs" data-color="#8e30eb" data-color-secondary="#8e30eb">
+ </script>
+
   <footer style="text-align:center;margin-top: 2rem;color:#777;">
-    2025 BTC for Plebs The only relay that's actually reliable.
+    2025 BTCforPlebs The only relay that's actually reliable.
   </footer>
+
+  <script>
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+      alert('Copied to clipboard: ' + text);
+    }, function(err) {
+      alert('Failed to copy: ', err);
+    });
+  }
+</script>
+
+
 </body>
 </html>

@@ -20,7 +20,6 @@
 
     <!-- scripts -->
     <script src="/assets/js/scripts.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/assets/css/main.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -76,20 +75,10 @@
   <small>🟢 = online | 🔴 = offline | ⚪️ = external site</small>
   <br></br>
   </div>
-  <!-- Add the chat widget node-->
-  <script type="module" src="/assets/js/chat.js"></script>
 
-<!-- Add chat widget container -->
-      <div id="chat-widget-root"></div>
 
-<!-- Import map for nostr-tools -->
-<script type="importmap">
-{
-  "imports": {
-    "nostr-tools": "https://esm.sh/nostr-tools@1.17.0"
-  }
-}
-</script>
+<script src="https://btcforplebs.com/nostr-chat-widget.js" data-nostr-pubkey="75462f4dece4fbde54a535cfa09eb0d329bda090a9c2f9ed6b5f9d1d2fb6c15b" data-brand-name="Chat with BTCforPlebs" data-color="#fdad01" data-color-secondary="#8e30eb">
+ </script>
     
 <script>
   // emoji status fetcher

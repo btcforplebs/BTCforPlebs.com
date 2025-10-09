@@ -33,6 +33,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// Serve chat widget with proper CORS and content-type
+app.get('/nostr-chat-widget.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.sendFile(path.join(__dirname, 'public', 'nostr-chat-widget.js'));
+});
+
 // Proxy /api/link-status to API server on 5252
 app.get('/api/link-status', async (req, res) => {
   try {
