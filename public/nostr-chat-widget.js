@@ -10,7 +10,7 @@
  * 
 EMBED IT WITH:
   <script src="https://btcforplebs.com/nostr-chat-widget.js" 
-      data-nostr-pubkey="YOUR_PUBKEY"
+      data-nostr-pubkey="YOUR_PUBKEY_HEX_FORMAT"
       data-brand-name="My Company"
       data-color="#8e30eb"
       data-color-secondary="#ff8c00">
@@ -19,21 +19,21 @@ EMBED IT WITH:
   COLOR OPTIONS WITH:
      <!-- Purple gradient -->
   <script src="https://btcforplebs.com/nostr-chat-widget.js"
-      data-nostr-pubkey="YOUR_PUBKEY"
+      data-nostr-pubkey="YOUR_PUBKEY_HEX_FORMAT"
       data-brand-name="My Company"
       data-color-primary="#8e30eb"
       data-color-secondary="#5a1e9e"></script>
  
   <!-- Blue gradient -->
   <script src="https://btcforplebs.com/nostr-chat-widget.js"
-      data-nostr-pubkey="YOUR_PUBKEY"
+      data-nostr-pubkey="YOUR_PUBKEY_HEX_FORMAT"
       data-brand-name="My Company"
       data-color-primary="#3b82f6"
       data-color-secondary="#1d4ed8"></script>
 
  <!-- Green gradient -->
  <script src="https://btcforplebs.com/nostr-chat-widget.js"
-      data-nostr-pubkey="YOUR_PUBKEY"
+      data-nostr-pubkey="YOUR_PUBKEY_HEX_FORMAT"
       data-brand-name="My Company"
       data-color-primary="#10b981"
       data-color-secondary="#059669"></script>
@@ -57,7 +57,7 @@ EMBED IT WITH:
   const csPubkey = scriptTag.getAttribute('data-nostr-pubkey') || 'PUBKEY_TO_RECEICE_MESSAGES';
   const brandName = scriptTag.getAttribute('data-brand-name') || 'Support Team Messaging';
   const primaryColor = scriptTag.getAttribute('data-color') || '#fdad01';
-  const secondaryColor = scriptTag.getAttribute('data-color-secondary') || '#ff8c00';
+  const secondaryColor = scriptTag.getAttribute('data-color-secondary') || '#000000';
   
   // Default relay configuration
   const DEFAULT_RELAYS = [
