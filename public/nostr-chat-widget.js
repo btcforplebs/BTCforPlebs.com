@@ -9,7 +9,7 @@
  * 
  * 
 EMBED IT WITH:
-  <script src="https://btcforplebs.com/nostr-chat-widget.js" 
+  <script src="https://btcforplebs.com/nostr-chat-widget.js"
       data-nostr-pubkey="YOUR_PUBKEY_HEX_FORMAT"
       data-brand-name="My Company"
       data-color="#8e30eb"
