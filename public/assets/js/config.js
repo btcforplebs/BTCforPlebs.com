@@ -8,11 +8,3 @@ const config = {
     // Debug mode - enable logging in development
     debug: window.location.hostname === 'localhost'
 };
-
-// Set up logging
-if (config.debug) {
-    console.log('Running in development mode');
-    console.log('API Base URL:', config.apiBaseUrl);
-} else {
-    console.log = function() {}; // Disable console.log in production
-}

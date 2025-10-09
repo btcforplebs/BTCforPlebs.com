@@ -20,6 +20,7 @@
 
     <!-- scripts -->
     <script src="/assets/js/scripts.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/assets/css/main.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -75,6 +76,20 @@
   <small>🟢 = online | 🔴 = offline | ⚪️ = external site</small>
   <br></br>
   </div>
+  <!-- Add the chat widget node-->
+  <script type="module" src="/assets/js/chat.js"></script>
+
+<!-- Add chat widget container -->
+      <div id="chat-widget-root"></div>
+
+<!-- Import map for nostr-tools -->
+<script type="importmap">
+{
+  "imports": {
+    "nostr-tools": "https://esm.sh/nostr-tools@1.17.0"
+  }
+}
+</script>
     
 <script>
   // emoji status fetcher

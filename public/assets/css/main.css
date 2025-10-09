@@ -332,6 +332,36 @@ small {
     transform: scale(1.1); /* Slight zoom on hover */
 }
 
+  #chat-window {
+    bottom: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    max-width: 100% !important;
+  }
+
+  #chat-header {
+    border-radius: 0 !important;
+  }
+
+  #chat-input {
+    border-radius: 0 0 0 0 !important;
+  }
+
+  #chat-bubble {
+    bottom: 16px !important;
+    right: 16px !important;
+    width: 50px;
+    height: 50px;
+  }
+  /* Safe area for mobile devices with notches */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+
+
 html {
     scroll-behavior: smooth;
 }
@@ -385,4 +415,199 @@ footer {
     font-size: 12px;
     margin-top: 20px;
     color: var(--text-color);
+}
+
+/* Nostr Chat Widget Styles */
+
+/* Widget positioning and z-index management */
+#chat-widget-root > div {
+  pointer-events: auto !important;
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  right: 1.5rem !important;
+  z-index: 99999 !important;
+}
+
+/* Chat bubble button */
+#chat-bubble {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  width: 60px;
+  height: 60px;
+  background: #fdad01;
+  border: 2px solid #fdad01;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+  z-index: 999999 !important;
+}
+
+#chat-bubble:hover {
+  transform: scale(1.1);
+}
+
+#chat-bubble.hidden {
+  display: none !important;
+}
+
+/* Chat window container */
+#chat-window {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  width: 380px;
+  height: 600px;
+  background: white;
+  border: 2px solid #fdad01;
+  border-radius: 12px;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 999999 !important;
+}
+
+#chat-window.open {
+  display: flex !important;
+}
+
+/* Chat header */
+#chat-header {
+  background: linear-gradient(to right, #fdad01, #ff9500);
+  color: white;
+  padding: 16px;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#status {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+#close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* Messages container */
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background: #f9fafb;
+}
+
+/* Message bubbles */
+.message {
+  margin-bottom: 12px;
+  display: flex;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.cs,
+.message.system {
+  justify-content: flex-start;
+}
+
+.message-bubble {
+  max-width: 75%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.message.user .message-bubble {
+  background: #fdad01;
+  color: white;
+}
+
+.message.cs .message-bubble {
+  background: white;
+  border: 1px solid #e5e7eb;
+  color: #1f2937;
+}
+
+.message.system .message-bubble {
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 13px;
+}
+
+.message-time {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* Input area */
+#chat-input {
+  padding: 16px;
+  border-top: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 0 0 10px 10px;
+}
+
+#input-container {
+  display: flex;
+  gap: 8px;
+}
+
+#message-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+#message-input:focus {
+  border-color: #fdad01;
+}
+
+#send-btn {
+  background: #fdad01;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+#send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Connecting animation */
+.connecting {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
