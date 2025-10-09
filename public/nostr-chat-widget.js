@@ -12,7 +12,7 @@ EMBED IT WITH:
   <script src="https://btcforplebs.com/nostr-chat-widget.js" 
       data-nostr-pubkey="YOUR_PUBKEY"
       data-brand-name="My Company"
-      data-color="#8e30eb">
+      data-color="#8e30eb"
       data-color-secondary="#ff8c00">
   </script>
  
@@ -55,7 +55,7 @@ EMBED IT WITH:
   // Get configuration from script tag
   const scriptTag = document.currentScript;
   const csPubkey = scriptTag.getAttribute('data-nostr-pubkey') || 'PUBKEY_TO_RECEICE_MESSAGES';
-  const brandName = scriptTag.getAttribute('data-brand-name') || 'Support Team';
+  const brandName = scriptTag.getAttribute('data-brand-name') || 'Support Team Messaging';
   const primaryColor = scriptTag.getAttribute('data-color') || '#fdad01';
   const secondaryColor = scriptTag.getAttribute('data-color-secondary') || '#ff8c00';
   
@@ -64,8 +64,7 @@ EMBED IT WITH:
     'wss://relay.damus.io',
     'wss://relay.primal.net',
     'wss://nos.lol',
-    'wss://relay.btcforplebs.com',
-    'wss://relay.logemedia.com'
+    'wss://relay.btcforplebs.com'
   ];
 
   // Inject Tailwind CSS
