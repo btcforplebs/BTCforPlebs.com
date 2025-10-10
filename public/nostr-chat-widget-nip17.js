@@ -1,51 +1,105 @@
 /**
  * Nostr Chat Widget - Embeddable Version
  * 
- * HOST THIS FILE on your server (e.g., https://btcforplebs.com/chat-widget.js)
  * 
- * USERS EMBED IT WITH:
- * <script src="https://btcforplebs.com/nostr-chat-widget.js" 
-        data-nostr-pubkey="YOUR_PUBKEY"
-        data-brand-name="My Company"
-        data-color="#8e30eb">
-        data-color-secondary="#ff8c00">
-    </script>
- */
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+EMBED IT WITH:
+  <script src="https://btcforplebs.com/nostr-chat-widget.js"
+      data-nostr-pubkey="YOUR_PUBKEY_HEX_FORMAT"
+      data-brand-name="My Company"
+      data-color="#8e30eb"
+      data-color-secondary="#ff8c00">
+  </script>
+ 
+  COLOR OPTIONS WITH:
+     <!-- Purple gradient -->
+  <script src="https://btcforplebs.com/nostr-chat-widget.js"
+      data-nostr-pubkey="YOUR_PUBKEY_HEX_FORMAT"
+      data-brand-name="My Company"
+      data-color-primary="#8e30eb"
+      data-color-secondary="#5a1e9e"></script>
+ 
+  <!-- Blue gradient -->
+  <script src="https://btcforplebs.com/nostr-chat-widget.js"
+      data-nostr-pubkey="YOUR_PUBKEY_HEX_FORMAT"
+      data-brand-name="My Company"
+      data-color-primary="#3b82f6"
+      data-color-secondary="#1d4ed8"></script>
+
+ <!-- Green gradient -->
+ <script src="https://btcforplebs.com/nostr-chat-widget.js"
+      data-nostr-pubkey="YOUR_PUBKEY_HEX_FORMAT"
+      data-brand-name="My Company"
+      data-color-primary="#10b981"
+      data-color-secondary="#059669"></script>
+ * 
+ * 
+**/
+
 
 (function() {
   'use strict';
 
-  // Get configuration from script tag
-  const scriptTag = document.currentScript;
-  const csPubkey = scriptTag.getAttribute('data-nostr-pubkey') || 'PUBKEY_TO_RECEICE_MESSAGES';
-  const brandName = scriptTag.getAttribute('data-brand-name') || 'Support Team';
-  const primaryColor = scriptTag.getAttribute('data-color-primary') || '#fdad01';
-  const secondaryColor = scriptTag.getAttribute('data-color-secondary') || '#ff8c00';
+  // Get configuration from script tag data attributes
+  const currentScript = document.currentScript || document.querySelector('script[data-nostr-pubkey]');
   
-  // Default relay configuration
   const DEFAULT_RELAYS = [
-    'wss://relay.damus.io',
-    'wss://relay.primal.net',
-    'wss://nos.lol',
     'wss://relay.btcforplebs.com',
-    'wss://relay.logemedia.com'
+    'wss://nos.lol',
+    'wss://relay.nostr.band'
   ];
 
-  // Inject Tailwind CSS
-  const tailwindLink = document.createElement('link');
-  tailwindLink.href = 'https://cdn.tailwindcss.com';
-  tailwindLink.rel = 'stylesheet';
-  document.head.appendChild(tailwindLink);
+  const csPubkey = currentScript?.getAttribute('data-nostr-pubkey') || '';
+  const brandName = currentScript?.getAttribute('data-brand-name') || 'Support Chat';
+  const primaryColor = currentScript?.getAttribute('data-color') || '#3b82f6';
+  const secondaryColor = currentScript?.getAttribute('data-color-secondary') || '#8b5cf6';
+  const relayUrls = currentScript?.getAttribute('data-relays')?.split(',') || DEFAULT_RELAYS;
+  const powDifficulty = Math.max(8, parseInt(currentScript?.getAttribute('data-pow-difficulty') || '10', 10));
+
+  if (!csPubkey) {
+    console.error('❌ Nostr Chat Widget: data-nostr-pubkey attribute is required');
+    return;
+  }
+  
+  console.log('✅ Widget loaded with pubkey:', csPubkey);
+
+  // Convert npub to hex if needed
+  function npubToHex(npubOrHex) {
+    if (npubOrHex.startsWith('npub')) {
+      // Simple npub decode (you'd use nostr-tools in production)
+      return npubOrHex; // Will be converted by nostr-tools
+    }
+    return npubOrHex;
+  }
+
+  // Inject Tailwind CSS (as script, not link)
+  const tailwindScript = document.createElement('script');
+  tailwindScript.src = 'https://cdn.tailwindcss.com';
+  document.head.appendChild(tailwindScript);
 
   // Inject custom styles
   const style = document.createElement('style');
   style.textContent = `
-    .safe-area-bottom {
-  padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    .nostr-widget-safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
     }
     #nostr-chat-widget-root > div {
       pointer-events: auto !important;
       z-index: 99999 !important;
+    }
+    #nostr-chat-widget-root input:focus {
+      outline: none;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin {
+      animation: spin 1s linear infinite;
     }
   `;
   document.head.appendChild(style);
@@ -60,7 +114,10 @@
   importMap.type = 'importmap';
   importMap.textContent = JSON.stringify({
     imports: {
-      'nostr-tools': 'https://esm.sh/nostr-tools@1.17.0'
+      'nostr-tools/pool': 'https://esm.sh/nostr-tools@2.7.0/pool',
+      'nostr-tools/pure': 'https://esm.sh/nostr-tools@2.7.0/pure',
+      'nostr-tools/nip19': 'https://esm.sh/nostr-tools@2.7.0/nip19',
+      'nostr-tools/nip44': 'https://esm.sh/nostr-tools@2.7.0/nip44'
     }
   });
   document.head.appendChild(importMap);
@@ -69,22 +126,321 @@
   const widgetScript = document.createElement('script');
   widgetScript.type = 'module';
   widgetScript.textContent = `
+    import { SimplePool } from 'nostr-tools/pool';
     import { 
-      relayInit,
-      generatePrivateKey,
+      generateSecretKey,
       getPublicKey,
-      getEventHash,
-      signEvent,
-      nip19,
-      nip04
-    } from 'nostr-tools';
+      finalizeEvent
+    } from 'nostr-tools/pure';
+    import * as nip19 from 'nostr-tools/nip19';
+    import * as nip44 from 'nostr-tools/nip44';
+    
+    // Create optimized Web Worker with inlined SHA-256
+    const workerCode = \`
+      // Inlined optimized SHA-256 implementation
+      function sha256(data) {
+        const K = new Uint32Array([
+          0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+          0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+          0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+          0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+          0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+          0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+          0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+          0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+        ]);
+        
+        const bytes = new Uint8Array(data);
+        const l = bytes.length * 8;
+        const blocks = Math.ceil((l + 65) / 512);
+        const msg = new Uint8Array(blocks * 64);
+        msg.set(bytes);
+        msg[bytes.length] = 0x80;
+        
+        const view = new DataView(msg.buffer);
+        view.setUint32(msg.length - 4, l, false);
+        
+        let h0 = 0x6a09e667, h1 = 0xbb67ae85, h2 = 0x3c6ef372, h3 = 0xa54ff53a;
+        let h4 = 0x510e527f, h5 = 0x9b05688c, h6 = 0x1f83d9ab, h7 = 0x5be0cd19;
+        
+        const w = new Uint32Array(64);
+        
+        for (let i = 0; i < blocks; i++) {
+          for (let j = 0; j < 16; j++) {
+            w[j] = view.getUint32(i * 64 + j * 4, false);
+          }
+          
+          for (let j = 16; j < 64; j++) {
+            const s0 = ((w[j-15] >>> 7) | (w[j-15] << 25)) ^ ((w[j-15] >>> 18) | (w[j-15] << 14)) ^ (w[j-15] >>> 3);
+            const s1 = ((w[j-2] >>> 17) | (w[j-2] << 15)) ^ ((w[j-2] >>> 19) | (w[j-2] << 13)) ^ (w[j-2] >>> 10);
+            w[j] = (w[j-16] + s0 + w[j-7] + s1) | 0;
+          }
+          
+          let a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
+          
+          for (let j = 0; j < 64; j++) {
+            const S1 = ((e >>> 6) | (e << 26)) ^ ((e >>> 11) | (e << 21)) ^ ((e >>> 25) | (e << 7));
+            const ch = (e & f) ^ (~e & g);
+            const temp1 = (h + S1 + ch + K[j] + w[j]) | 0;
+            const S0 = ((a >>> 2) | (a << 30)) ^ ((a >>> 13) | (a << 19)) ^ ((a >>> 22) | (a << 10));
+            const maj = (a & b) ^ (a & c) ^ (b & c);
+            const temp2 = (S0 + maj) | 0;
+            
+            h = g; g = f; f = e; e = (d + temp1) | 0;
+            d = c; c = b; b = a; a = (temp1 + temp2) | 0;
+          }
+          
+          h0 = (h0 + a) | 0; h1 = (h1 + b) | 0; h2 = (h2 + c) | 0; h3 = (h3 + d) | 0;
+          h4 = (h4 + e) | 0; h5 = (h5 + f) | 0; h6 = (h6 + g) | 0; h7 = (h7 + h) | 0;
+        }
+        
+        const hash = new Uint8Array(32);
+        const hashView = new DataView(hash.buffer);
+        hashView.setUint32(0, h0, false);
+        hashView.setUint32(4, h1, false);
+        hashView.setUint32(8, h2, false);
+        hashView.setUint32(12, h3, false);
+        hashView.setUint32(16, h4, false);
+        hashView.setUint32(20, h5, false);
+        hashView.setUint32(24, h6, false);
+        hashView.setUint32(28, h7, false);
+        
+        return hash;
+      }
+      
+      // NIP-13: Count leading zero bits in a hex string
+      function countLeadingZeroes(hex) {
+        let count = 0;
+        for (let i = 0; i < hex.length; i++) {
+          const nibble = parseInt(hex[i], 16);
+          if (nibble === 0) {
+            count += 4;
+          } else {
+            count += Math.clz32(nibble) - 28;
+            break;
+          }
+        }
+        return count;
+      }
+      
+      function bytesToHex(bytes) {
+        return Array.from(bytes)
+          .map(b => b.toString(16).padStart(2, '0'))
+          .join('');
+      }
+      
+      self.onmessage = function(e) {
+        const { event, targetDifficulty } = e.data;
+        const startTime = Date.now();
+        let nonce = 0;
+        let bestDifficulty = 0;
+        
+        // Add nonce tag if not present
+        if (!event.tags) event.tags = [];
+        let nonceTagIndex = event.tags.findIndex(t => t[0] === 'nonce');
+        if (nonceTagIndex === -1) {
+          event.tags.push(['nonce', '0', String(targetDifficulty)]);
+          nonceTagIndex = event.tags.length - 1;
+        }
+        
+        while (true) {
+          event.tags[nonceTagIndex][1] = String(nonce);
+          
+          // Calculate event hash using inlined SHA-256
+          const eventData = [
+            0,
+            event.pubkey,
+            event.created_at,
+            event.kind,
+            event.tags,
+            event.content
+          ];
+          const serialized = JSON.stringify(eventData);
+          const encoder = new TextEncoder();
+          const data = encoder.encode(serialized);
+          
+          // Fast synchronous hash!
+          const hash = sha256(data);
+          event.id = bytesToHex(hash);
+          
+          const difficulty = countLeadingZeroes(event.id);
+          
+          if (difficulty > bestDifficulty) {
+            bestDifficulty = difficulty;
+          }
+          
+          // Report progress every 25k iterations
+          if (nonce % 25000 === 0 && nonce > 0) {
+            const elapsed = (Date.now() - startTime) / 1000;
+            const hashRate = Math.round(nonce / elapsed);
+            self.postMessage({ 
+              type: 'progress', 
+              nonce, 
+              difficulty: bestDifficulty, 
+              elapsed: elapsed.toFixed(1),
+              hashRate
+            });
+          }
+          
+          if (difficulty >= targetDifficulty) {
+            const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+            const hashRate = Math.round(nonce / parseFloat(elapsed));
+            self.postMessage({ 
+              type: 'complete', 
+              event, 
+              nonce, 
+              difficulty, 
+              elapsed,
+              hashRate
+            });
+            return;
+          }
+          
+          nonce++;
+          
+          // Update created_at every 500k iterations
+          if (nonce % 500000 === 0) {
+            event.created_at = Math.floor(Date.now() / 1000);
+          }
+        }
+      };
+    \`;
+    
+    const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
+    const workerUrl = URL.createObjectURL(workerBlob);
+    
+    // Compatible hex converters
+    function hexToBytes(hex) {
+      if (typeof hex !== 'string') {
+        throw new Error('hex must be a string');
+      }
+      if (hex.length % 2 !== 0) {
+        throw new Error('hex string must have an even length');
+      }
+      const bytes = new Uint8Array(hex.length / 2);
+      for (let i = 0; i < hex.length; i += 2) {
+        const byte = parseInt(hex.slice(i, i + 2), 16);
+        if (isNaN(byte)) {
+          throw new Error('Invalid hex string');
+        }
+        bytes[i / 2] = byte;
+      }
+      return bytes;
+    }
+    
+    function bytesToHex(bytes) {
+      return Array.from(bytes)
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+    
+    // NIP-13: Count leading zero bits in a hex string
+    function countLeadingZeroes(hex) {
+      let count = 0;
+      for (let i = 0; i < hex.length; i++) {
+        const nibble = parseInt(hex[i], 16);
+        if (nibble === 0) {
+          count += 4;
+        } else {
+          count += Math.clz32(nibble) - 28;
+          break;
+        }
+      }
+      return count;
+    }
+    
+    // Estimate mining time based on difficulty (optimized for instant messaging)
+    function estimateTime(difficulty) {
+      if (difficulty <= 8) return '<0.5s';
+      if (difficulty <= 10) return '~1s';
+      if (difficulty <= 12) return '1-2s';
+      if (difficulty <= 16) return '3-8s';
+      if (difficulty <= 20) return '15-45s';
+      if (difficulty <= 24) return '1-3min';
+      if (difficulty <= 28) return '3-8min';
+      return '>10min';
+    }
+    
+    // NIP-13: Mine proof-of-work using optimized Web Worker
+    async function mineEvent(event, targetDifficulty) {
+      return new Promise((resolve, reject) => {
+        console.log(\`⛏️ Mining PoW with difficulty \${targetDifficulty} (optimized worker)...\`);
+        
+        const worker = new Worker(workerUrl);
+        
+        worker.onmessage = function(e) {
+          if (e.data.type === 'progress') {
+            console.log(\`  Mining... nonce: \${e.data.nonce}, best: \${e.data.difficulty} bits, time: \${e.data.elapsed}s, rate: \${e.data.hashRate} H/s\`);
+          } else if (e.data.type === 'complete') {
+            console.log(\`✅ Mined! Difficulty: \${e.data.difficulty}, Nonce: \${e.data.nonce}, Time: \${e.data.elapsed}s, Avg: \${e.data.hashRate} H/s\`);
+            worker.terminate();
+            resolve(e.data.event);
+          }
+        };
+        
+        worker.onerror = function(error) {
+          console.error('Mining error:', error);
+          worker.terminate();
+          reject(error);
+        };
+        
+        worker.postMessage({ event, targetDifficulty });
+      });
+    }
 
     const CONFIG = {
-      relays: ${JSON.stringify(DEFAULT_RELAYS)},
-      csPubkey: '${csPubkey}',
+      relays: ${JSON.stringify(relayUrls)},
+      csPubkey: '${npubToHex(csPubkey)}'.trim().toLowerCase(),
       brandName: '${brandName}',
-      primaryColor: '${primaryColor}'
+      primaryColor: '${primaryColor}',
+      secondaryColor: '${secondaryColor}',
+      powDifficulty: ${powDifficulty}
     };
+
+    // Convert npub to hex if needed
+    if (CONFIG.csPubkey.startsWith('npub')) {
+      try {
+        const decoded = nip19.decode(CONFIG.csPubkey);
+        CONFIG.csPubkey = decoded.data.toLowerCase();
+        console.log('✅ Decoded npub to hex:', CONFIG.csPubkey.substring(0, 8) + '...');
+      } catch (error) {
+        console.error('❌ Failed to decode npub:', error);
+        alert('Invalid Nostr pubkey provided. Please check data-nostr-pubkey attribute.');
+        throw error;
+      }
+    }
+    
+    // Validate hex pubkey format and check if it's valid
+    if (!CONFIG.csPubkey || CONFIG.csPubkey.length !== 64) {
+      console.error('❌ Invalid pubkey length:', CONFIG.csPubkey?.length, 'Expected: 64');
+      console.error('❌ Pubkey value:', CONFIG.csPubkey);
+      alert('Invalid Nostr pubkey. Expected 64-character hex string or npub.');
+      throw new Error('Invalid pubkey');
+    }
+    
+    if (!/^[0-9a-f]{64}$/.test(CONFIG.csPubkey)) {
+      console.error('❌ Pubkey contains invalid characters');
+      alert('Invalid Nostr pubkey. Must be 64 hex characters.');
+      throw new Error('Invalid pubkey format');
+    }
+    
+    // Test if pubkey is valid by trying to use it (with CORRECT hex format)
+    console.log('✅ Testing pubkey validity...');
+    try {
+      const testPriv = generateSecretKey();
+      const testPrivHex = bytesToHex(testPriv);
+      nip44.v2.utils.getConversationKey(testPrivHex, CONFIG.csPubkey);
+      console.log('✅ Pubkey is valid!');
+    } catch (e) {
+      console.error('❌ Pubkey failed validation test:', e.message);
+      alert(\`The provided pubkey appears to be invalid or not a valid secp256k1 public key. Error: \${e.message}\`);
+      throw new Error('Invalid pubkey - failed cryptographic validation');
+    }
+    
+    console.log('✅ Widget initialized with pubkey:', CONFIG.csPubkey.substring(0, 8) + '...');
+    console.log('✅ Pubkey length:', CONFIG.csPubkey.length);
+    console.log('✅ PoW difficulty:', CONFIG.powDifficulty + ' bits - Optimized for instant messaging');
+    console.log('✅ Relays:', CONFIG.relays.join(', '));
 
     let state = {
       isOpen: false,
@@ -92,101 +448,280 @@
       inputMessage: '',
       myPrivKey: null,
       myPubKey: null,
-      relays: [],
+      pool: null,
       connected: false,
-      sessionId: null
+      sessionId: null,
+      isMining: false
     };
 
+    // NIP-17 Helper Functions
+    function randomNow() {
+      return Math.floor(Date.now() / 1000) - Math.floor(Math.random() * (2 * 24 * 60 * 60));
+    }
+
+    function randomDelay() {
+      return Math.floor(Math.random() * 2 * 24 * 60 * 60);
+    }
+
+    async function createSeal(rumor, recipientPubkey, senderPrivkey) {
+      if (!recipientPubkey || !senderPrivkey) {
+        throw new Error('Missing keys for seal creation');
+      }
+      
+      console.log('🔒 Creating seal');
+      
+      const rumorEvent = {
+        kind: 14,
+        created_at: rumor.created_at || randomNow(),
+        tags: rumor.tags || [],
+        content: rumor.content,
+        pubkey: bytesToHex(getPublicKey(senderPrivkey))
+      };
+
+      try {
+        // CRITICAL: getConversationKey expects BOTH args as HEX STRINGS
+        const senderPrivkeyHex = bytesToHex(senderPrivkey);
+        const recipientPubkeyHex = recipientPubkey; // already hex
+        
+        console.log('  - Sender privkey (hex):', senderPrivkeyHex.substring(0, 8) + '...');
+        console.log('  - Recipient pubkey (hex):', recipientPubkeyHex.substring(0, 8) + '...');
+        
+        const conversationKey = nip44.v2.utils.getConversationKey(
+          senderPrivkeyHex,
+          recipientPubkeyHex
+        );
+        
+        console.log('  - ✅ Got conversation key');
+        
+        const encrypted = nip44.v2.encrypt(
+          JSON.stringify(rumorEvent),
+          conversationKey
+        );
+
+        const seal = {
+          kind: 13,
+          created_at: randomNow(),
+          tags: [],
+          content: encrypted,
+          pubkey: bytesToHex(getPublicKey(senderPrivkey))
+        };
+
+        return finalizeEvent(seal, senderPrivkey);
+      } catch (error) {
+        console.error('❌ Error in createSeal:', error);
+        throw error;
+      }
+    }
+
+    async function createGiftWrap(seal, recipientPubkey) {
+      if (!recipientPubkey) {
+        throw new Error('Missing recipient pubkey for gift wrap');
+      }
+      
+      console.log('🎁 Creating gift wrap for:', recipientPubkey.substring(0, 8) + '...');
+      
+      const randomKey = generateSecretKey();
+      const randomKeyHex = bytesToHex(randomKey);
+      
+      // CRITICAL: getConversationKey expects BOTH args as HEX STRINGS
+      const conversationKey = nip44.v2.utils.getConversationKey(
+        randomKeyHex,
+        recipientPubkey
+      );
+      
+      const encrypted = nip44.v2.encrypt(
+        JSON.stringify(seal),
+        conversationKey
+      );
+
+      let giftWrap = {
+        kind: 1059,
+        created_at: randomNow(),
+        tags: [['p', recipientPubkey]],
+        content: encrypted,
+        pubkey: bytesToHex(getPublicKey(randomKey))
+      };
+
+      // Mine proof-of-work (ALWAYS REQUIRED)
+      giftWrap = await mineEvent(giftWrap, CONFIG.powDifficulty);
+
+      return finalizeEvent(giftWrap, randomKey);
+    }
+
+    async function unwrapGift(giftWrap, recipientPrivkey) {
+      try {
+        console.log('🎁 Unwrapping gift from:', giftWrap.pubkey.substring(0, 8) + '...');
+        
+        // CRITICAL: getConversationKey expects BOTH args as HEX STRINGS
+        const recipientPrivkeyHex = bytesToHex(recipientPrivkey);
+        const senderPubkeyHex = giftWrap.pubkey;
+        
+        const conversationKey = nip44.v2.utils.getConversationKey(
+          recipientPrivkeyHex,
+          senderPubkeyHex
+        );
+        
+        const decryptedSeal = nip44.v2.decrypt(
+          giftWrap.content,
+          conversationKey
+        );
+        
+        const seal = JSON.parse(decryptedSeal);
+        
+        const rumorConversationKey = nip44.v2.utils.getConversationKey(
+          recipientPrivkeyHex,
+          seal.pubkey
+        );
+        
+        const decryptedRumor = nip44.v2.decrypt(
+          seal.content,
+          rumorConversationKey
+        );
+        
+        const rumor = JSON.parse(decryptedRumor);
+        
+        return {
+          content: rumor.content,
+          sender: rumor.pubkey,
+          created_at: rumor.created_at,
+          tags: rumor.tags
+        };
+      } catch (error) {
+        console.error('Error unwrapping gift:', error);
+        return null;
+      }
+    }
+
+    // Session Management
     function getSessionKey() {
       const stored = localStorage.getItem('nostr_chat_session');
       if (stored) {
         try {
-          const session = JSON.parse(stored);
-          if (Date.now() - session.created < 24 * 60 * 60 * 1000) {
-            return session.privKey;
-          }
-        } catch (e) {}
+          const { privKey, pubKey, sessionId } = JSON.parse(stored);
+          console.log('📂 Loaded session from storage');
+          const privKeyArray = new Uint8Array(privKey);
+          console.log('  - Loaded privkey length:', privKeyArray.length);
+          console.log('  - Loaded pubkey:', pubKey.substring(0, 8) + '...');
+          return { 
+            privKey: privKeyArray, 
+            pubKey, 
+            sessionId 
+          };
+        } catch (e) {
+          console.error('❌ Failed to load session:', e);
+          localStorage.removeItem('nostr_chat_session');
+        }
       }
-      
-      const privKey = generatePrivateKey();
-      localStorage.setItem('nostr_chat_session', JSON.stringify({
-        privKey,
-        created: Date.now()
+
+      console.log('🆕 Creating new session');
+      const privKey = generateSecretKey();
+      const pubKey = bytesToHex(getPublicKey(privKey));
+      const sessionId = \`session_\${Date.now()}_\${Math.random().toString(36).substr(2, 9)}\`;
+
+      console.log('  - New privkey length:', privKey.length);
+      console.log('  - New pubkey:', pubKey.substring(0, 8) + '...');
+      console.log('  - New pubkey length:', pubKey.length);
+
+      localStorage.setItem('nostr_chat_session', JSON.stringify({ 
+        privKey: Array.from(privKey), 
+        pubKey, 
+        sessionId 
       }));
-      return privKey;
+      
+      return { privKey, pubKey, sessionId };
     }
 
+    // Initialize
     async function init() {
-      state.myPrivKey = getSessionKey();
-      state.myPubKey = getPublicKey(state.myPrivKey);
-      state.sessionId = state.myPubKey.substring(0, 8);
-      
-      console.log('🔑 Session Identity:', nip19.npubEncode(state.myPubKey));
-      
-      const relayPromises = CONFIG.relays.map(async (url) => {
-        try {
-          const relay = relayInit(url);
-          
-          relay.on('connect', () => {
-            console.log(\`✓ Connected to \${url}\`);
-            checkConnection();
-          });
-          
-          relay.on('disconnect', () => {
-            console.log(\`✗ Disconnected from \${url}\`);
-          });
-          
-          await relay.connect();
-          return relay;
-        } catch (error) {
-          console.error(\`Failed: \${url}:\`, error);
-          return null;
-        }
-      });
-      
-      state.relays = (await Promise.all(relayPromises)).filter(r => r !== null);
-      
-      if (state.relays.length === 0) {
-        addMessage('system', '⚠️ Failed to connect to any relays');
-        return;
+      try {
+        console.log('🚀 Initializing NIP-17 Chat Widget...');
+
+        const session = getSessionKey();
+        state.myPrivKey = session.privKey; // Already Uint8Array from getSessionKey
+        state.myPubKey = session.pubKey;
+        state.sessionId = session.sessionId;
+
+        console.log(\`👤 Session: \${nip19.npubEncode(state.myPubKey).substring(0, 16)}...\`);
+
+        // Create pool
+        state.pool = new SimplePool();
+        state.connected = true;
+        console.log('✅ Relay pool initialized');
+        
+        loadPreviousMessages();
+        subscribeToReplies();
+        addMessage('system', \`Ready! Messages mine \${CONFIG.powDifficulty}-bit PoW (\${estimateTime(CONFIG.powDifficulty)})\`);
+      } catch (error) {
+        console.error('❌ Initialization error:', error);
+        addMessage('system', '⚠️ Failed to initialize: ' + error.message);
+        throw error;
       }
-      
-      console.log(\`✓ Connected to \${state.relays.length}/\${CONFIG.relays.length} relays\`);
-      
-      subscribeToReplies();
-      loadPreviousMessages();
-      
-      state.connected = true;
+    }
+
+    function addMessage(sender, text, fullMessage = null) {
+      const message = fullMessage || {
+        id: \`msg_\${Date.now()}_\${Math.random()}\`,
+        text,
+        sender,
+        timestamp: new Date().toISOString()
+      };
+
+      state.messages.push(message);
+      saveMessages();
       render();
     }
 
-    function checkConnection() {
-      const connected = state.relays.some(r => r.status === 1);
-      state.connected = connected;
+    function formatTime(timestamp) {
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    function updateConnectionStatus() {
+      state.connected = state.pool !== null;
       render();
     }
 
     function subscribeToReplies() {
       const filters = [{
-        kinds: [4],
+        kinds: [1059],
         '#p': [state.myPubKey],
-        authors: [CONFIG.csPubkey],
         since: Math.floor(Date.now() / 1000) - 86400
       }];
-      
-      console.log('🔔 Subscribing to replies...');
 
-      state.relays.forEach(relay => {
-        const sub = relay.sub(filters);
-        
-        sub.on('event', (event) => {
-          handleIncomingMessage(event);
-        });
-        
-        sub.on('eose', () => {
-          console.log(\`✓ Subscribed: \${relay.url}\`);
-        });
-      });
+      console.log('📡 Subscribing to NIP-17 messages...');
+
+      try {
+        const sub = state.pool.subscribeMany(
+          CONFIG.relays,
+          filters,
+          {
+            onevent(event) {
+              handleIncomingMessage(event).catch(err => {
+                console.error('Error handling incoming message:', err);
+              });
+            },
+            oneose() {
+              console.log(\`✓ Subscription active\`);
+            },
+            onclose(reason) {
+              console.log('Subscription closed:', reason);
+            }
+          }
+        );
+      } catch (error) {
+        console.error('❌ Failed to subscribe:', error);
+      }
     }
 
     function loadPreviousMessages() {
@@ -209,24 +744,30 @@
         if (state.messages.find(m => m.id === event.id)) {
           return;
         }
-        
-        console.log('📨 Received message');
-        
-        const decryptedText = await nip04.decrypt(
-          state.myPrivKey,
-          event.pubkey,
-          event.content
-        );
-        
+
+        console.log('📨 Received gift wrap');
+
+        const unwrapped = await unwrapGift(event, state.myPrivKey);
+
+        if (!unwrapped) {
+          console.error('Failed to unwrap message');
+          return;
+        }
+
+        if (unwrapped.sender !== CONFIG.csPubkey) {
+          console.log('Ignoring message from unknown sender');
+          return;
+        }
+
         const message = {
           id: event.id,
-          text: decryptedText,
+          text: unwrapped.content,
           sender: 'cs',
-          timestamp: new Date(event.created_at * 1000).toISOString()
+          timestamp: new Date(unwrapped.created_at * 1000).toISOString()
         };
-        
-        addMessage('cs', decryptedText, message);
-        
+
+        addMessage('cs', unwrapped.content, message);
+
         if (!document.hasFocus()) {
           const originalTitle = document.title;
           document.title = '💬 New message!';
@@ -235,226 +776,194 @@
           }, 3000);
         }
       } catch (error) {
-        console.error('Error decrypting message:', error);
+        console.error('Error processing message:', error);
       }
     }
 
     async function sendMessage() {
-      if (!state.inputMessage.trim()) return;
+      if (!state.inputMessage.trim() || state.isMining) return;
 
       const messageText = state.inputMessage;
-      
+      state.inputMessage = '';
+      state.isMining = true;
+      render();
+
       try {
-        console.log('🔐 Encrypting and sending...');
+        console.log('🔐 Creating NIP-17 message...');
+        console.log('- My pubkey:', state.myPubKey?.substring(0, 8) + '...');
+        console.log('- My pubkey length:', state.myPubKey?.length);
+        console.log('- My privkey type:', state.myPrivKey?.constructor.name);
+        console.log('- My privkey length:', state.myPrivKey?.length);
+        console.log('- Recipient:', CONFIG.csPubkey?.substring(0, 8) + '...');
+        console.log('- Recipient length:', CONFIG.csPubkey?.length);
         
-        const encrypted = await nip04.encrypt(
-          state.myPrivKey,
-          CONFIG.csPubkey,
-          messageText
-        );
-        
-        let event = {
-          kind: 4,
-          created_at: Math.floor(Date.now() / 1000),
-          tags: [['p', CONFIG.csPubkey]],
-          content: encrypted,
-          pubkey: state.myPubKey
-        };
-        
-        event.id = getEventHash(event);
-        event.sig = signEvent(event, state.myPrivKey);
-        
-        let published = 0;
-        for (const relay of state.relays) {
-          try {
-            await relay.publish(event);
-            published++;
-            console.log(\`✓ Published to \${relay.url}\`);
-          } catch (err) {
-            console.error(\`✗ Failed: \${relay.url}:\`, err);
-          }
+        if (!state.myPrivKey || !CONFIG.csPubkey) {
+          throw new Error('Missing encryption keys');
         }
         
-        if (published === 0) {
-          addMessage('system', '⚠️ Failed to send - no relay connections');
+        // Ensure privkey is Uint8Array
+        if (!(state.myPrivKey instanceof Uint8Array)) {
+          console.error('❌ Private key is not Uint8Array:', typeof state.myPrivKey);
+          throw new Error('Invalid private key format');
+        }
+
+        const rumor = {
+          content: messageText,
+          created_at: Math.floor(Date.now() / 1000),
+          tags: [['p', CONFIG.csPubkey]]
+        };
+
+        addMessage('system', '⛏️ Mining...');
+
+        const seal = await createSeal(rumor, CONFIG.csPubkey, state.myPrivKey);
+        const giftWrap = await createGiftWrap(seal, CONFIG.csPubkey);
+
+        console.log('📤 Publishing to relays...');
+        
+        // SimplePool.publish returns an array of promises
+        try {
+          const publishPromises = state.pool.publish(CONFIG.relays, giftWrap);
+          
+          const results = await Promise.allSettled(publishPromises);
+          
+          const published = results.filter(r => r.status === 'fulfilled').length;
+          const failed = results.filter(r => r.status === 'rejected');
+          
+          if (failed.length > 0) {
+            console.log(\`⚠️ Failed to publish to \${failed.length} relays\`);
+            failed.forEach((result, i) => {
+              const error = result.reason?.message || result.reason || 'Unknown error';
+              console.error(\`  - Relay \${CONFIG.relays[i]}: \${error}\`);
+              
+              // Detect PoW requirement
+              if (error.includes('pow:') || error.includes('bits needed')) {
+                console.warn(\`    ⚠️ This relay requires proof-of-work\`);
+              }
+            });
+          }
+          
+          if (published === 0) {
+            addMessage('system', '⚠️ Failed to send - no relay connections');
+            return;
+          }
+
+          console.log(\`✅ Message sent to \${published}/\${CONFIG.relays.length} relays\`);
+        } catch (publishError) {
+          console.error('❌ Publish error:', publishError);
+          addMessage('system', '⚠️ Failed to publish message: ' + publishError.message);
           return;
         }
-        
-        console.log(\`✓ Published to \${published}/\${state.relays.length} relays\`);
-        
+
         const message = {
-          id: event.id,
+          id: giftWrap.id,
           text: messageText,
           sender: 'user',
           timestamp: new Date().toISOString()
         };
-        
+
         addMessage('user', messageText, message);
-        state.inputMessage = '';
         render();
-        
+
       } catch (error) {
-        console.error('Error sending:', error);
-        addMessage('system', '⚠️ Failed to send message');
+        console.error('❌ Error sending message:', error);
+        console.error('Stack:', error.stack);
+        addMessage('system', '⚠️ Failed to send message: ' + error.message);
+      } finally {
+        state.isMining = false;
+        render();
       }
-    }
-
-    function addMessage(sender, text, fullMessage = null) {
-      const msg = fullMessage || {
-        id: Date.now().toString(),
-        text,
-        sender,
-        timestamp: new Date().toISOString()
-      };
-      
-      state.messages.push(msg);
-      saveMessages();
-      render();
-      scrollToBottom();
-    }
-
-    function scrollToBottom() {
-      setTimeout(() => {
-        const container = document.getElementById('nostr-messages');
-        if (container) {
-          container.scrollTop = container.scrollHeight;
-        }
-      }, 100);
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    function formatTime(timestamp) {
-      const date = new Date(timestamp);
-      return date.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
-        minute: '2-digit',
-        hour12: true 
-      });
     }
 
     function render() {
-      const container = document.getElementById('nostr-chat-widget-root');
-      
-      if (!container) return;
+      const root = document.getElementById('nostr-chat-widget-root');
+      if (!root) return;
 
-      if (!state.isOpen) {
-        container.innerHTML = \`
-          <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[99999]">
-            <button onclick="window.NostrChat.open()"
-              class="bg-gradient-to-br from-[\${CONFIG.primaryColor}] to-[#ff8c00] hover:from-[#ff8c00] hover:to-[\${CONFIG.primaryColor}] text-white rounded-full p-4 sm:p-5 shadow-2xl transition-all transform hover:scale-110 active:scale-95"
+      root.innerHTML = \`
+        <div style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; font-family: system-ui, -apple-system, sans-serif;">
+          \${!state.isOpen ? \`
+            <button 
+              onclick="window.NostrChat.open()" 
+              style="background: linear-gradient(to bottom right, \${CONFIG.primaryColor}, \${CONFIG.secondaryColor}); box-shadow: 0 10px 25px rgba(0,0,0,0.2);"
+              class="hover:opacity-90 text-white rounded-full w-16 h-16 sm:w-14 sm:h-14 shadow-2xl transition-all active:scale-95 flex items-center justify-center"
               aria-label="Open chat"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sm:w-7 sm:h-7">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
               </svg>
             </button>
-          </div>
-        \`;
-        return;
-      }
-
-      container.innerHTML = \`
-        <div class="fixed inset-4 sm:inset-auto sm:bottom-6 sm:right-6 z-[99999]">
-          <div class="bg-white rounded-2xl shadow-2xl w-full h-full sm:w-96 sm:h-[600px] max-w-full flex flex-col overflow-hidden">
-            <div class="bg-gradient-to-br from-[\${CONFIG.primaryColor}] to-[#ff8c00] text-white p-4 sm:p-5">
-              <div class="flex justify-between items-center">
-                <div class="flex-1 min-w-0">
-                  <h3 class="font-bold text-base sm:text-lg">\${CONFIG.brandName}</h3>
-                  <div class="flex items-center gap-2 mt-1">
-                    <div class="w-2 h-2 rounded-full flex-shrink-0 \${state.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}"></div>
-                    <span class="text-xs text-orange-100 truncate">
-                      \${state.connected ? \`P2P E2EE • \${state.relays.length} relays\` : 'Connecting...'}
-                    </span>
-                  </div>
+          \` : \`
+            <div class="bg-white rounded-2xl shadow-2xl" style="width: 90vw; max-width: 400px; height: 600px; max-height: 80vh; display: flex; flex-direction: column;">
+              <div style="background: linear-gradient(to right, \${CONFIG.primaryColor}, \${CONFIG.secondaryColor});" class="text-white p-4 rounded-t-2xl flex justify-between items-center">
+                <div>
+                  <div class="font-semibold text-lg">\${CONFIG.brandName}</div>
+                  <div class="text-xs opacity-90">\${state.connected ? '🟢 Online' : '🔴 Offline'}</div>
                 </div>
-                <button 
-                  onclick="window.NostrChat.close()" 
-                  class="hover:bg-white/20 p-2 rounded-lg transition-colors ml-2 flex-shrink-0"
-                  aria-label="Close chat"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button onclick="window.NostrChat.close()" class="hover:opacity-75 transition-opacity" aria-label="Close chat">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
                 </button>
               </div>
-            </div>
 
-            <div id="nostr-messages" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 bg-gradient-to-b from-gray-50 to-white">
-              \${state.messages.length === 0 ? \`
-                <div class="text-center text-gray-400 mt-8">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="mx-auto mb-3 opacity-50">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                  </svg>
-                  <p class="text-sm">Start a conversation</p>
+              <div id="nostr-messages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50" style="scroll-behavior: smooth;">
+                \${state.messages.map(msg => {
+                  if (msg.sender === 'system') {
+                    return \`
+                      <div class="text-center">
+                        <span class="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">\${escapeHtml(msg.text)}</span>
+                      </div>
+                    \`;
+                  } else if (msg.sender === 'user') {
+                    return \`
+                      <div class="flex justify-end">
+                        <div style="background: linear-gradient(to bottom right, \${CONFIG.primaryColor}, \${CONFIG.secondaryColor});" class="text-white px-4 py-2 rounded-2xl rounded-tr-sm max-w-[80%]">
+                          <div class="break-words">\${escapeHtml(msg.text)}</div>
+                          <div class="text-xs opacity-75 mt-1">\${formatTime(msg.timestamp)}</div>
+                        </div>
+                      </div>
+                    \`;
+                  } else if (msg.sender === 'cs') {
+                    return \`
+                      <div class="flex justify-start">
+                        <div class="bg-white px-4 py-2 rounded-2xl rounded-tl-sm max-w-[80%] shadow-sm">
+                          <div class="text-gray-800 break-words">\${escapeHtml(msg.text)}</div>
+                          <div class="text-xs text-gray-400 mt-1">\${formatTime(msg.timestamp)}</div>
+                        </div>
+                      </div>
+                    \`;
+                  }
+                  return '';
+                }).join('')}
+              </div>
+
+              <div class="border-t bg-white p-4 rounded-b-2xl nostr-widget-safe-bottom">
+                <div class="flex gap-2">
+                  <input 
+                    id="nostr-message-input" 
+                    type="text" 
+                    value="\${escapeHtml(state.inputMessage)}" 
+                    placeholder="Type your message..." 
+                    class="flex-1 px-4 py-3 border rounded-xl text-black"
+                    style="border-color: #d1d5db;"
+                    \${!state.connected ? 'disabled' : ''}
+                  >
+                  <button 
+                    onclick="window.NostrChat.send()" 
+                    \${!state.connected || !state.inputMessage.trim() ? 'disabled' : ''} 
+                    style="background: linear-gradient(to bottom right, \${CONFIG.primaryColor}, \${CONFIG.secondaryColor});"
+                    class="hover:opacity-90 disabled:opacity-50 text-white px-5 py-3 rounded-xl transition-all disabled:cursor-not-allowed active:scale-95"
+                    aria-label="Send message"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                  </button>
                 </div>
-              \` : state.messages.map(msg => {
-                if (msg.sender === 'system') {
-                  return \`
-                    <div class="flex justify-center">
-                      <div class="bg-orange-50 text-orange-700 text-xs px-3 py-2 rounded-full border border-orange-200">
-                        \${escapeHtml(msg.text)}
-                      </div>
-                    </div>
-                  \`;
-                } else if (msg.sender === 'user') {
-                  return \`
-                    <div class="flex justify-end">
-                      <div class="max-w-[85%] sm:max-w-xs">
-                        <div class="bg-gradient-to-br from-[\${CONFIG.primaryColor}] to-[#ff8c00] text-white rounded-2xl rounded-tr-sm px-3 py-2 sm:px-4 sm:py-3 shadow-md text-sm sm:text-base">
-                          \${escapeHtml(msg.text)}
-                        </div>
-                        <div class="text-xs text-gray-400 mt-1 text-right">\${formatTime(msg.timestamp)}</div>
-                      </div>
-                    </div>
-                  \`;
-                } else if (msg.sender === 'cs') {
-                  return \`
-                    <div class="flex justify-start">
-                      <div class="max-w-[85%] sm:max-w-xs">
-                        <div class="bg-white border border-gray-200 text-gray-800 rounded-2xl rounded-tl-sm px-3 py-2 sm:px-4 sm:py-3 shadow-md text-sm sm:text-base">
-                          <div class="text-xs font-semibold" style="color: \${CONFIG.primaryColor}">\${CONFIG.brandName}</div>
-                          \${escapeHtml(msg.text)}
-                        </div>
-                        <div class="text-xs text-gray-400 mt-1">\${formatTime(msg.timestamp)}</div>
-                      </div>
-                    </div>
-                  \`;
-                }
-                return '';
-              }).join('')}
-            </div>
-
-            <div class="border-t bg-white p-3 sm:p-4 pb-safe">
-              <div class="flex gap-2">
-                <input 
-                  id="nostr-message-input" 
-                  type="text" 
-                  value="\${escapeHtml(state.inputMessage)}" 
-                  placeholder="Type your message..." 
-                  class="flex-1 px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 text-sm sm:text-base"
-                  style="focus:ring-color: \${CONFIG.primaryColor}"
-                  \${!state.connected ? 'disabled' : ''}
-                >
-                <button 
-                  onclick="window.NostrChat.send()" 
-                  \${!state.connected || !state.inputMessage.trim() ? 'disabled' : ''} 
-                  class="bg-gradient-to-br from-[\${CONFIG.primaryColor}] to-[#ff8c00] hover:from-[#ff8c00] hover:to-[\${CONFIG.primaryColor}] disabled:from-gray-400 disabled:to-gray-400 text-white px-4 py-2 sm:px-5 sm:py-3 rounded-xl transition-all disabled:cursor-not-allowed active:scale-95 flex-shrink-0"
-                  aria-label="Send message"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                  </svg>
-                </button>
               </div>
             </div>
-          </div>
+          \`}
         </div>
       \`;
 
@@ -473,15 +982,17 @@
             sendMessage();
           }
         });
-        
+
         const messagesContainer = document.getElementById('nostr-messages');
         if (messagesContainer && state.messages.length > 0) {
           setTimeout(() => {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
           }, 100);
         }
-        
-        messageInput.focus();
+
+        if (state.isOpen) {
+          messageInput.focus();
+        }
       }
     }
 
@@ -490,8 +1001,11 @@
       open: async () => {
         state.isOpen = true;
         render();
-        if (state.relays.length === 0) {
-          await init();
+        if (!state.pool) {
+          await init().catch(err => {
+            console.error('Failed to initialize:', err);
+            addMessage('system', '⚠️ Failed to initialize. Please refresh.');
+          });
         }
       },
       close: () => {
@@ -504,10 +1018,9 @@
     // Initial render
     render();
   `;
-  
+
   document.body.appendChild(widgetScript);
 })();
-
 
 /*!
  * fill-range <https://github.com/jonschlinkert/fill-range>
