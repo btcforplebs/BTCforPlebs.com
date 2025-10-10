@@ -4,3 +4,6 @@ BTCforPlebs Website Videos/*
 node_modules/*
 package-lock.json
 public/assets/data/link-status.json
+public/local.html
+public/nostr-chat-widget-mini.js
+public/nostr-chat-widget-mini.js

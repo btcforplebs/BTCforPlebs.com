@@ -409,32 +409,20 @@
       container.innerHTML = \`
         <div class="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-[99999]">
           <div class="glass-morphism chat-window-mobile rounded-none sm:rounded-2xl shadow-2xl w-full h-full sm:w-96 sm:h-[600px] max-w-full flex flex-col overflow-hidden">
-            <div style="background: linear-gradient(to bottom right, \${CONFIG.primaryColor}, \${CONFIG.secondaryColor});" class="text-white p-3.5 sm:p-4">
-              <div class="flex justify-between items-center">
-                <div class="flex-1 min-w-0">
-                  <h3 class="font-bold text-base sm:text-lg">\${CONFIG.brandName}</h3>
-                  <div class="flex items-center gap-2 mt-0.5">
-                    <div class="w-2 h-2 rounded-full flex-shrink-0 \${state.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}"></div>
-                    <span class="text-xs text-white/80 truncate">
-                      \${state.connected ? \`P2P E2EE • \${state.relays.length} relays\` : 'Connecting...'}
-                    </span>
-                  </div>
-                </div>
-                <button 
-                  onclick="window.NostrChat.close()" 
-                  class="hover:bg-white/20 p-2 rounded-lg transition-colors ml-2 flex-shrink-0"
-                  aria-label="Close chat"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div id="nostr-messages" class="flex-1 overflow-y-auto p-3 sm:p-3.5 space-y-3 glass-morphism-light">
-              \${state.messages.length === 0 ? \`
+</div>
+<div style="background: linear-gradient(to bottom right, ${CONFIG.primaryColor}, ${CONFIG.secondaryColor});" class="text-white py-4 px-5 sm:px-6 rounded-t-2xl">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <img src="/assets/logo.svg" alt="logo" class="h-5 w-5 sm:h-6 sm:w-6 rounded" />
+      <h3 class="font-semibold text-sm sm:text-base">${CONFIG.brandName}</h3>
+    </div>
+    <button onclick="window.NostrChat.close()" class="p-2 hover:bg-white/20 rounded-md transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div style="background: linear-gradient(to bottom right, ${CONFIG.primaryColor}, ${CONFIG.secondaryColor});" class="text-white rounded-2xl rounded-tr-sm px-3 py-2 sm:px-4 sm:py-3 shadow-md text-sm sm:text-base">
+    ${escapeHtml(msg.text)}
+  </div>
                 <div class="text-center text-white/60 mt-8">
                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="mx-auto mb-3 opacity-50">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
