@@ -39,8 +39,17 @@ app.get("/", (req, res) => {
   res.json({ status: "Local link status server running" });
 });
 
+const cache = { data: null, timestamp: 0 };
+
 app.get("/api/link-status", async (req, res) => {
-  console.log("🔄 Checking link statuses...");
+  const now = Date.now();
+  const tenMinutes = 10 * 60 * 1000;
+  if (cache.data && (now - cache.timestamp < tenMinutes)) {
+    console.log("🔁 Serving from cache");
+    return res.json(cache.data);
+  }
+
+  console.log("🔄 Checking link status and refreshing cache...");
   const results = {};
   const agent = new https.Agent({ rejectUnauthorized: false });
 
@@ -83,6 +92,10 @@ app.get("/api/link-status", async (req, res) => {
       results[url] = "offline";
     }
   }
+
+  // Update cache
+  cache.data = results;
+  cache.timestamp = now;
 
   res.json(results);
 });

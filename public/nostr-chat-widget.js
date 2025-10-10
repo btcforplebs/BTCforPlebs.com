@@ -37,11 +37,6 @@
     document.head.appendChild(viewportMeta);
   }
 
-  // Inject Tailwind CSS
-  const tailwindScript = document.createElement('script');
-  tailwindScript.src = 'https://cdn.tailwindcss.com';
-  document.head.appendChild(tailwindScript);
-
   // Inject custom styles with glassmorphism
   const style = document.createElement('style');
   style.textContent = `

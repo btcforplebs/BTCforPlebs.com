@@ -77,10 +77,6 @@ EMBED IT WITH:
     return npubOrHex;
   }
 
-  // Inject Tailwind CSS (as script, not link)
-  const tailwindScript = document.createElement('script');
-  tailwindScript.src = 'https://cdn.tailwindcss.com';
-  document.head.appendChild(tailwindScript);
 
   // Inject custom styles
   const style = document.createElement('style');
