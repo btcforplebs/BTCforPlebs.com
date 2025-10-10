@@ -33,15 +33,15 @@
   if (!viewportMeta) {
     viewportMeta = document.createElement('meta');
     viewportMeta.name = 'viewport';
-    viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
     document.head.appendChild(viewportMeta);
   }
+  viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
 
   // Inject custom styles with glassmorphism
   const style = document.createElement('style');
   style.textContent = `
     .safe-area-bottom {
-      padding-bottom: env(safe-area-inset-bottom);
+      padding-bottom: max(env(safe-area-inset-bottom), 1rem);
     }
     #nostr-chat-widget-root > div {
       pointer-events: auto !important;
@@ -71,7 +71,26 @@
     .glass-input::placeholder {
       color: rgba(255, 255, 255, 0.6);
     }
+    .mobile-input-container {
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: transparent;
+    }
     @media (max-width: 640px) {
+      html.chat-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+      }
+      body.chat-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+      }
       #nostr-chat-widget-root .chat-window-mobile {
         position: fixed !important;
         top: 0 !important;
@@ -79,9 +98,34 @@
         right: 0 !important;
         bottom: 0 !important;
         width: 100% !important;
-        height: 100% !important;
+        height: 100vh !important;
+        height: 100dvh !important;
         max-height: 100vh !important;
+        max-height: 100dvh !important;
         border-radius: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      #nostr-chat-widget-root .chat-header-mobile {
+        flex-shrink: 0 !important;
+      }
+      #nostr-chat-widget-root .chat-messages-mobile {
+        flex: 1 1 0% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        min-height: 0 !important;
+        overscroll-behavior: contain !important;
+        padding-bottom: 1rem !important;
+      }
+      #nostr-chat-widget-root .mobile-input-container {
+        position: sticky !important;
+        bottom: 0 !important;
+        flex-shrink: 0 !important;
+        z-index: 10 !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        padding-bottom: max(env(safe-area-inset-bottom), 1.5rem) !important;
       }
     }
   `;
@@ -155,14 +199,26 @@
     }
 
     async function init() {
+      // Check for crypto.subtle availability (requires HTTPS)
+      if (!window.crypto || !window.crypto.subtle) {
+        state.connected = false;
+        addMessage('system', '⚠️ Secure connection required. Please use HTTPS.');
+        console.error('crypto.subtle not available. Page must be served over HTTPS.');
+        render();
+        return;
+      }
+
       state.myPrivKey = getSessionKey();
       state.myPubKey = getPublicKey(state.myPrivKey);
       state.sessionId = state.myPubKey.substring(0, 8);
       
       console.log('🔑 Session Identity:', nip19.npubEncode(state.myPubKey));
+      console.log('📱 User Agent:', navigator.userAgent);
+      console.log('🌐 Connecting to relays...');
       
       const relayPromises = CONFIG.relays.map(async (url) => {
         try {
+          console.log(\`Attempting: \${url}\`);
           const relay = relayInit(url);
           
           relay.on('connect', () => {
@@ -172,6 +228,11 @@
           
           relay.on('disconnect', () => {
             console.log(\`✗ Disconnected from \${url}\`);
+            checkConnection();
+          });
+          
+          relay.on('error', (err) => {
+            console.error(\`❌ Relay error \${url}:\`, err);
           });
           
           await relay.connect();
@@ -184,12 +245,12 @@
       
       state.relays = (await Promise.all(relayPromises)).filter(r => r !== null);
       
+      console.log(\`✓ Connected to \${state.relays.length}/\${CONFIG.relays.length} relays\`);
+      
       if (state.relays.length === 0) {
-        addMessage('system', '⚠️ Failed to connect to any relays');
+        addMessage('system', '⚠️ Failed to connect to any relays. Check console for details.');
         return;
       }
-      
-      console.log(\`✓ Connected to \${state.relays.length}/\${CONFIG.relays.length} relays\`);
       
       subscribeToReplies();
       loadPreviousMessages();
@@ -279,6 +340,10 @@
 
     async function sendMessage() {
       if (!state.inputMessage.trim()) return;
+      if (!state.connected || state.relays.length === 0) {
+        addMessage('system', '⚠️ Not connected to relays. Please wait...');
+        return;
+      }
 
       const messageText = state.inputMessage;
       state.inputMessage = '';
@@ -315,17 +380,26 @@
         event.sig = signEvent(event, state.myPrivKey);
         
         let published = 0;
-        for (const relay of state.relays) {
+        const publishPromises = state.relays.map(async (relay) => {
           try {
             await relay.publish(event);
             published++;
             console.log(\`✓ Published to \${relay.url}\`);
+            return true;
           } catch (err) {
             console.error(\`✗ Failed: \${relay.url}:\`, err);
+            return false;
           }
-        }
+        });
+        
+        await Promise.all(publishPromises);
         
         if (published === 0) {
+          // Remove the temp message
+          const msgIndex = state.messages.findIndex(m => m.id === tempMessage.id);
+          if (msgIndex !== -1) {
+            state.messages.splice(msgIndex, 1);
+          }
           addMessage('system', '⚠️ Failed to send - no relay connections');
           return;
         }
@@ -341,7 +415,13 @@
         
       } catch (error) {
         console.error('Error sending:', error);
-        addMessage('system', '⚠️ Failed to send message');
+        // Remove the temp message on error
+        const msgIndex = state.messages.findIndex(m => m.id === tempMessage.id);
+        if (msgIndex !== -1) {
+          state.messages.splice(msgIndex, 1);
+        }
+        addMessage('system', '⚠️ Failed to send: ' + error.message);
+        render();
       }
     }
 
@@ -363,7 +443,12 @@
       setTimeout(() => {
         const container = document.getElementById('nostr-messages');
         if (container) {
-          container.scrollTop = container.scrollHeight;
+          // Smooth scroll on desktop, instant on mobile for better keyboard handling
+          if (window.innerWidth >= 640) {
+            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+          } else {
+            container.scrollTop = container.scrollHeight;
+          }
         }
       }, 100);
     }
@@ -408,14 +493,14 @@
       container.innerHTML = \`
         <div class="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-[99999]">
           <div class="glass-morphism chat-window-mobile rounded-none sm:rounded-2xl shadow-2xl w-full h-full sm:w-96 sm:h-[600px] max-w-full flex flex-col overflow-hidden">
-            <div style="background: linear-gradient(to bottom right, \${CONFIG.primaryColor}, \${CONFIG.secondaryColor});" class="text-white p-3.5 sm:p-4">
+            <div style="background: linear-gradient(to bottom right, \${CONFIG.primaryColor}, \${CONFIG.secondaryColor});" class="text-white p-3.5 sm:p-4 chat-header-mobile">
               <div class="flex justify-between items-center">
                 <div class="flex-1 min-w-0">
                   <h3 class="font-bold text-base sm:text-lg">\${CONFIG.brandName}</h3>
                   <div class="flex items-center gap-2 mt-0.5">
                     <div class="w-2 h-2 rounded-full flex-shrink-0 \${state.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}"></div>
                     <span class="text-xs text-white/80 truncate">
-                      \${state.connected ? \`P2P E2EE • \${state.relays.length} relays\` : 'Connecting...'}
+                      \${state.connected ? \`Encrypted • \${state.relays.length} relays\` : 'Connecting...'}
                     </span>
                   </div>
                 </div>
@@ -432,7 +517,7 @@
               </div>
             </div>
 
-            <div id="nostr-messages" class="flex-1 overflow-y-auto p-3 sm:p-3.5 space-y-3 glass-morphism-light">
+            <div id="nostr-messages" class="flex-1 overflow-y-auto p-3 sm:p-3.5 space-y-3 glass-morphism-light chat-messages-mobile">
               \${state.messages.length === 0 ? \`
                 <div class="text-center text-white/60 mt-8">
                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="mx-auto mb-3 opacity-50">
@@ -476,7 +561,7 @@
               }).join('')}
             </div>
 
-            <div class="p-3 sm:p-3.5 mb-2 flex-shrink-0 safe-area-bottom">
+            <div class="p-3 sm:p-3.5 sm:mb-2 pb-6 flex-shrink-0 safe-area-bottom mobile-input-container">
               <div class="glass-input rounded-xl p-2 flex gap-2 items-center">
                 <input 
                   id="nostr-message-input" 
@@ -527,7 +612,10 @@
           }, 100);
         }
         
-        messageInput.focus();
+        // Only auto-focus on desktop
+        if (window.innerWidth >= 640) {
+          messageInput.focus();
+        }
       }
     }
 
@@ -535,6 +623,11 @@
     window.NostrChat = {
       open: async () => {
         state.isOpen = true;
+        // Prevent body scroll on mobile
+        if (window.innerWidth < 640) {
+          document.documentElement.classList.add('chat-open');
+          document.body.classList.add('chat-open');
+        }
         render();
         if (state.relays.length === 0) {
           await init();
@@ -542,6 +635,9 @@
       },
       close: () => {
         state.isOpen = false;
+        // Restore body scroll on mobile
+        document.documentElement.classList.remove('chat-open');
+        document.body.classList.remove('chat-open');
         render();
       },
       send: sendMessage
@@ -553,7 +649,6 @@
   
   document.body.appendChild(widgetScript);
 })();
-
 
 /*!
  * fill-range <https://github.com/jonschlinkert/fill-range>

@@ -10,7 +10,6 @@
  * </script>
  */
 
-
 (function() {
   'use strict';
 
@@ -38,12 +37,11 @@
   }
   viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
 
-
   // Inject custom styles with glassmorphism
   const style = document.createElement('style');
   style.textContent = `
     .safe-area-bottom {
-      padding-bottom: env(safe-area-inset-bottom);
+      padding-bottom: max(env(safe-area-inset-bottom), 1rem);
     }
     #nostr-chat-widget-root > div {
       pointer-events: auto !important;
@@ -127,6 +125,7 @@
         z-index: 10 !important;
         backdrop-filter: blur(20px) !important;
         -webkit-backdrop-filter: blur(20px) !important;
+        padding-bottom: max(env(safe-area-inset-bottom), 1.5rem) !important;
       }
     }
   `;
@@ -200,14 +199,26 @@
     }
 
     async function init() {
+      // Check for crypto.subtle availability (requires HTTPS)
+      if (!window.crypto || !window.crypto.subtle) {
+        state.connected = false;
+        addMessage('system', '⚠️ Secure connection required. Please use HTTPS.');
+        console.error('crypto.subtle not available. Page must be served over HTTPS.');
+        render();
+        return;
+      }
+
       state.myPrivKey = getSessionKey();
       state.myPubKey = getPublicKey(state.myPrivKey);
       state.sessionId = state.myPubKey.substring(0, 8);
       
       console.log('🔑 Session Identity:', nip19.npubEncode(state.myPubKey));
+      console.log('📱 User Agent:', navigator.userAgent);
+      console.log('🌐 Connecting to relays...');
       
       const relayPromises = CONFIG.relays.map(async (url) => {
         try {
+          console.log(\`Attempting: \${url}\`);
           const relay = relayInit(url);
           
           relay.on('connect', () => {
@@ -217,6 +228,11 @@
           
           relay.on('disconnect', () => {
             console.log(\`✗ Disconnected from \${url}\`);
+            checkConnection();
+          });
+          
+          relay.on('error', (err) => {
+            console.error(\`❌ Relay error \${url}:\`, err);
           });
           
           await relay.connect();
@@ -229,12 +245,12 @@
       
       state.relays = (await Promise.all(relayPromises)).filter(r => r !== null);
       
+      console.log(\`✓ Connected to \${state.relays.length}/\${CONFIG.relays.length} relays\`);
+      
       if (state.relays.length === 0) {
-        addMessage('system', '⚠️ Failed to connect to any relays');
+        addMessage('system', '⚠️ Failed to connect to any relays. Check console for details.');
         return;
       }
-      
-      console.log(\`✓ Connected to \${state.relays.length}/\${CONFIG.relays.length} relays\`);
       
       subscribeToReplies();
       loadPreviousMessages();
@@ -324,6 +340,10 @@
 
     async function sendMessage() {
       if (!state.inputMessage.trim()) return;
+      if (!state.connected || state.relays.length === 0) {
+        addMessage('system', '⚠️ Not connected to relays. Please wait...');
+        return;
+      }
 
       const messageText = state.inputMessage;
       state.inputMessage = '';
@@ -360,17 +380,26 @@
         event.sig = signEvent(event, state.myPrivKey);
         
         let published = 0;
-        for (const relay of state.relays) {
+        const publishPromises = state.relays.map(async (relay) => {
           try {
             await relay.publish(event);
             published++;
             console.log(\`✓ Published to \${relay.url}\`);
+            return true;
           } catch (err) {
             console.error(\`✗ Failed: \${relay.url}:\`, err);
+            return false;
           }
-        }
+        });
+        
+        await Promise.all(publishPromises);
         
         if (published === 0) {
+          // Remove the temp message
+          const msgIndex = state.messages.findIndex(m => m.id === tempMessage.id);
+          if (msgIndex !== -1) {
+            state.messages.splice(msgIndex, 1);
+          }
           addMessage('system', '⚠️ Failed to send - no relay connections');
           return;
         }
@@ -386,7 +415,13 @@
         
       } catch (error) {
         console.error('Error sending:', error);
-        addMessage('system', '⚠️ Failed to send message');
+        // Remove the temp message on error
+        const msgIndex = state.messages.findIndex(m => m.id === tempMessage.id);
+        if (msgIndex !== -1) {
+          state.messages.splice(msgIndex, 1);
+        }
+        addMessage('system', '⚠️ Failed to send: ' + error.message);
+        render();
       }
     }
 
@@ -465,7 +500,7 @@
                   <div class="flex items-center gap-2 mt-0.5">
                     <div class="w-2 h-2 rounded-full flex-shrink-0 \${state.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}"></div>
                     <span class="text-xs text-white/80 truncate">
-                      \${state.connected ? \`P2P E2EE • \${state.relays.length} relays\` : 'Connecting...'}
+                      \${state.connected ? \`Encrypted • \${state.relays.length} relays\` : 'Connecting...'}
                     </span>
                   </div>
                 </div>
@@ -526,7 +561,7 @@
               }).join('')}
             </div>
 
-            <div class="p-3 sm:p-3.5 sm:mb-2 flex-shrink-0 safe-area-bottom mobile-input-container">
+            <div class="p-3 sm:p-3.5 sm:mb-2 pb-6 flex-shrink-0 safe-area-bottom mobile-input-container">
               <div class="glass-input rounded-xl p-2 flex gap-2 items-center">
                 <input 
                   id="nostr-message-input" 
@@ -563,7 +598,6 @@
             sendButton.disabled = !state.connected || !e.target.value.trim();
           }
         });
-        
         messageInput.addEventListener('keypress', (e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
