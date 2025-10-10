@@ -17,22 +17,22 @@ const links = [
   "https://live.btcforplebs.com",
   "https://explorer.btcforplebs.com",
   "https://nsec.btcforplebs.com",
-  "https://flotilla.btcforplebs.com"
+  "https://flotilla.btcforplebs.com",
   "https://jumble.btcforplebs.com"
 ];
 
 // Optional: Only allow internal requests if you're not exposing this publicly
-app.use((req, res, next) => {
-  const origin = req.headers.origin || 'unknown';
-  console.log(`Request: ${req.method} ${req.url} | Origin: ${origin}`);
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
+ app.use((req, res, next) => {
+   const origin = req.headers.origin || 'unknown';
+   console.log(`Request: ${req.method} ${req.url} | Origin: ${origin}`);
+   res.header("Access-Control-Allow-Headers", "Content-Type");
+   res.header("Access-Control-Allow-Origin", "*");
+   res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
+ 
+   if (req.method === 'OPTIONS') {
+     return res.sendStatus(200);
+   }
+   next();
 });
 
 app.get("/", (req, res) => {
