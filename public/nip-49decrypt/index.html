@@ -560,7 +560,7 @@
     <article class="card action-card">
       <h2>Decrypt your <span class="mono">ncryptsec</span></h2>
       <p>No telemetry, no calls home, no external dependencies. Take your device offline, paste your encrypted key and password to extract the 32-byte secret HEX and its bech32 <code class="mono">nsec</code>.</p>
-      <div id="offline-message" class="offline-message">YOU DEVICE IS CONNECTED TO THE INTERNET. This window will activate once no internet connection is detected.</div>
+      <div id="offline-message" class="offline-message">YOUR DEVICE IS CONNECTED TO THE INTERNET. This window will activate once no internet connection is detected.</div>
       <div id="decrypt-form" style="display:none">
         <div>
           <label for="ncryptsec">ncryptsec (bech32)</label>
@@ -1344,7 +1344,7 @@ exports.bech32m = getLibraryFromEncoding('bech32m');
   const exportBtn = document.getElementById('exportBtn');
   const resultEl = document.getElementById('result');
   const decryptInteractables = [ncryptInput, passwordInput, decryptBtn, clearBtn, exportBtn].filter(Boolean);
-  const CONNECTIVITY_PING_PATH = './connectivity-ping.txt';
+  const CONNECTIVITY_PING_PATH = 'connection-test.txt';
   const CONNECTIVITY_PROBE_CACHE_MS = 2500;
 
   function setStatus(success, message) {
