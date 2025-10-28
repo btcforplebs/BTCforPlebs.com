@@ -14,6 +14,7 @@ const links = [
   "https://nosotros.btcforplebs.com",
   "https://mint.btcforplebs.com",
   "https://cashu.btcforplebs.com",
+  "https://shipyard.btcforplebs.com",
   "https://live.btcforplebs.com",
   "https://nsec.btcforplebs.com",
   "https://flotilla.btcforplebs.com",
