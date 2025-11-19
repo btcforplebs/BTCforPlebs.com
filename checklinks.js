@@ -14,7 +14,7 @@ const links = [
   "https://nosotros.btcforplebs.com",
   "https://mint.btcforplebs.com",
   "https://cashu.btcforplebs.com",
-  "https://shipyard.btcforplebs.com",
+  "https://fevela.btcforplebs.com",
   "https://live.btcforplebs.com",
   "https://nsec.btcforplebs.com",
   "https://flotilla.btcforplebs.com",
@@ -23,17 +23,17 @@ const links = [
 ];
 
 // Optional: Only allow internal requests if you're not exposing this publicly
- app.use((req, res, next) => {
-   const origin = req.headers.origin || 'unknown';
-   console.log(`Request: ${req.method} ${req.url} | Origin: ${origin}`);
-   res.header("Access-Control-Allow-Headers", "Content-Type");
-   res.header("Access-Control-Allow-Origin", "*");
-   res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
- 
-   if (req.method === 'OPTIONS') {
-     return res.sendStatus(200);
-   }
-   next();
+app.use((req, res, next) => {
+  const origin = req.headers.origin || 'unknown';
+  console.log(`Request: ${req.method} ${req.url} | Origin: ${origin}`);
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
 });
 
 app.get("/", (req, res) => {
