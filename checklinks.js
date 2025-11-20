@@ -11,7 +11,6 @@ const links = [
   "https://mempool.btcforplebs.com",
   "https://lightning.btcforplebs.com",
   "https://nostrudel.btcforplebs.com",
-  "https://nosotros.btcforplebs.com",
   "https://mint.btcforplebs.com",
   "https://cashu.btcforplebs.com",
   "https://fevela.btcforplebs.com",
