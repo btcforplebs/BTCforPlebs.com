@@ -1,70 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <title>Learn Nostr</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta property="og:image" content="/images/thumb.jpeg">
-    <meta property="og:url" content="https://btcforplebs.com">
-    <meta name="twitter:card" content="summary_large_image">
+  <title>Learn Nostr</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:image" content="/images/thumb.jpeg">
+  <meta property="og:url" content="https://btcforplebs.com">
+  <meta name="twitter:card" content="summary_large_image">
 
-    <!-- favicon -->
-    <link rel="icon" href="/images/favicon.png" type="image/png">
+  <!-- favicon -->
+  <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <!-- scripts -->
-    <script src="/assets/js/scripts.js" defer></script>
+  <!-- scripts -->
+  <script src="/assets/js/scripts.js" defer></script>
 
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
 
 </head>
-<body>
-        
-    <!-- Bitcoin Price Banner -->
-    <div id="btc-price-banner">This page is under construction</div>
 
-    <div class="container">
-        <div class="logo-container">
-            <a href="/">
-                <img src="/images/btcforplebs_logo.gif" alt="Home" class="header-logo">
-            </a>
+<body>
+
+  <!-- Bitcoin Price Banner -->
+  <div id="btc-price-banner">This page is under construction</div>
+
+  <div class="container">
+    <div class="logo-container">
+      <a href="/">
+        <img src="/images/btcforplebs_logo.gif" alt="Home" class="header-logo">
+      </a>
     </div>
 
-        <h1>Learn About Nostr</h1>
-        <p>Nostr is a decentralized, censorship-resistant protocol for communication. Learn more about its potential by watching the video below.</p>
-        <h2>What is Nostr and Why Should You Care?</h2>
-        
-        <div class="video-container">
-            <video controls playsinline width="100%" height="auto" poster="https://img.youtube.com/vi/8aZkg3OQc5c/maxresdefault.jpg">
-                <source src="https://v.nostr.build/voby1u385n0ZwAbp.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-    
+    <h1>Learn About Nostr</h1>
+    <p>Nostr is a decentralized, censorship-resistant protocol for communication. Learn more about its potential by
+      watching the video below.</p>
+    <h2>What is Nostr and Why Should You Care?</h2>
+
+    <div class="video-container">
+      <video controls playsinline width="100%" height="auto"
+        poster="https://img.youtube.com/vi/8aZkg3OQc5c/maxresdefault.jpg">
+        <source src="https://v.nostr.build/voby1u385n0ZwAbp.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <h2>Nostr Tools & Resources</h2>
+    <p>Explore the ecosystem of Nostr apps and tools available on BTCforPlebs:</p>
+
+    <h3>Relay</h3>
+    <ul>
+      <li><a href="/relay" target="_blank"><strong>BTCforPlebs Relay</strong></a> – A reliable WebSocket relay for your
+        Nostr clients. Connect at <code>wss://relay.btcforplebs.com</code>.</li>
+    </ul>
+
+    <h3>Tools</h3>
+    <ul>
+      <li><a href="https://nsec.btcforplebs.com" target="_blank"><strong>Nsec Bunker</strong></a> – A remote signer that
+        keeps your private keys safe while allowing you to use Nostr apps.</li>
+      <li><a href="https://ncryptdesec.btcforplebs.com" target="_blank"><strong>NcryptDEsec</strong></a> – A tool for
+        encrypting and decrypting Nostr keys using the NIP-49 standard.</li>
+    </ul>
+
+    <h3>Clients</h3>
+    <ul>
+      <li><a href="https://nostrudel.btcforplebs.com" target="_blank"><strong>Nostrudel</strong></a> – A feature-rich
+        web client for Nostr, offering a comprehensive social media experience.</li>
+      <li><a href="https://coracle.btcforplebs.com" target="_blank"><strong>Coracle</strong></a> – A lightweight and
+        highly customizable Nostr web client.</li>
+      <li><a href="https://jumble.btcforplebs.com" target="_blank"><strong>Jumble</strong></a> – A unique Nostr client
+        focused on specific user interactions.</li>
+      <li><a href="https://fevela.btcforplebs.com" target="_blank"><strong>Fevela</strong></a> – A social client
+        designed for ease of use and community engagement.</li>
+    </ul>
+
+    <h3>Community</h3>
+    <ul>
+      <li><a href="https://flotilla.btcforplebs.com/" target="_blank"><strong>Flotilla</strong></a> – A
+        community-focused platform built on Nostr for group discussions and collaboration.</li>
+    </ul>
+
+    <h3>Storage</h3>
+    <ul>
+      <li><a href="https://bloom.btcforplebs.com" target="_blank"><strong>Bloom</strong></a> – A decentralized storage
+        solution replacing Google Drive, powered by Blossom servers.</li>
+    </ul>
+
     <a href="/index.html" class="button">Home</a>
 
-    </div>
-<script src="/nostr-chat-widget.js"
-  data-nostr-pubkey="75462f4dece4fbde54a535cfa09eb0d329bda090a9c2f9ed6b5f9d1d2fb6c15b" 
-  data-brand-name="Chat with BTCforPlebs" 
-  data-color="#fdad01" 
-  data-color-secondary="#222222">
-</script>
+  </div>
+  <script src="/nostr-chat-widget.js"
+    data-nostr-pubkey="75462f4dece4fbde54a535cfa09eb0d329bda090a9c2f9ed6b5f9d1d2fb6c15b"
+    data-brand-name="Chat with BTCforPlebs" data-color="#fdad01" data-color-secondary="#222222">
+    </script>
 
-    <div id="footer"></div>
-    
-    <a href="#top" title="Back to Top">🔝</a>
-<script>  
-// --- 2. Dropdown navigation ---------------------------------------------
-  window.navigateToSection = function (select) {
-    const sectionId = select.value;
-    if (sectionId) {
-      const section = document.getElementById(sectionId);
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
+  <div id="footer"></div>
+
+  <a href="#top" title="Back to Top">🔝</a>
+  <script>
+    // --- 2. Dropdown navigation ---------------------------------------------
+    window.navigateToSection = function (select) {
+      const sectionId = select.value;
+      if (sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth' });
+        }
       }
-    }
-  };</script>
+    };</script>
 </body>
-</html>
 
+</html>

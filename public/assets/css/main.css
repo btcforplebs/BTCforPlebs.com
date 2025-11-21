@@ -611,3 +611,68 @@ footer {
     opacity: 0.5;
   }
 }
+
+/* Navbar Styles */
+.navbar {
+    background: linear-gradient(to bottom, var(--button-bg-top), var(--button-bg-bottom));
+    border-bottom: 1px solid var(--button-border);
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.navbar-logo img {
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 6px;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-item {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.navbar-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #F7931A; /* Bitcoin Orange */
+}
+
+/* Mobile Navbar */
+@media (max-width: 768px) {
+    .navbar-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .navbar-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+}
