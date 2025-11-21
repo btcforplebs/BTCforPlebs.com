@@ -64,10 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => console.error('Error loading footer:', error));
 
   // --- 5. Fetch and Display Last Update from Gitea -----------------------
-  fetch('https://gitea.btcforplebs.com/api/v1/repos/btcforplebs/BTCforPlebs.com/commits/main')
+  fetch('https://gitea.btcforplebs.com/api/v1/repos/btcforplebs/BTCforPlebs.com')
     .then(response => response.json())
     .then(data => {
-      const lastUpdate = new Date(data.commit.author.date);
+      const lastUpdate = new Date(data.updated_at);
       const formattedDate = lastUpdate.toLocaleDateString();
       const formattedTime = lastUpdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
