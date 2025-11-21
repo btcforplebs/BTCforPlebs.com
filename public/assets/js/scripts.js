@@ -24,11 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
       folder.style.display = 'block';
       button.classList.add('active');
     }
-}
+  }
 
 
 
-// Footer Loader and Event Listeners
+  // Footer Loader and Event Listeners
   fetch('/parts/footer.html')
     .then(response => response.text())
     .then(data => {
@@ -63,8 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(error => console.error('Error loading footer:', error));
 
-  // --- 5. Fetch and Display Last Update from GitHub -----------------------
-  fetch('https://api.github.com/repos/btcforplebs/BTCforPlebs.com/commits/main')
+  // --- 5. Fetch and Display Last Update from Gitea -----------------------
+  fetch('https://gitea.btcforplebs.com/api/v1/repos/btcforplebs/BTCforPlebs.com/commits/main')
     .then(response => response.json())
     .then(data => {
       const lastUpdate = new Date(data.commit.author.date);
@@ -83,4 +83,4 @@ document.addEventListener('DOMContentLoaded', () => {
         updateText.textContent = 'Last update: Error fetching data.';
       }
     });
-        });
+});
