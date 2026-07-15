@@ -1,5 +1,5 @@
 const express = require('express');
-const fetch = require('node-fetch'); // npm install node-fetch@2
+
 const path = require('path');
 
 const app = express();
@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 
 // CORS headers
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); 
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
   if (req.method === 'OPTIONS') {
@@ -40,18 +40,7 @@ app.get('/nostr-chat-widget.js', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'nostr-chat-widget.js'));
 });
 
-// Proxy /api/link-status to API server on 5252
-app.get('/api/link-status', async (req, res) => {
-  try {
-    const response = await fetch('http://127.0.0.1:5252/api/link-status');
-    if (!response.ok) throw new Error(`API responded ${response.status}`);
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error('❌ Proxy error:', err.message);
-    res.status(500).json({ error: 'Failed to fetch link status' });
-  }
-});
+// Proxy endpoint removed
 
 
 // ... previous middleware ...

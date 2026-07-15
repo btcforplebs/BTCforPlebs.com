@@ -5,174 +5,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BTCforPlebs</title>
-
-  <!-- Meta Description -->
-  <meta name="description"
-    content="BTCforPlebs is a resource to help ordinary people learn about Bitcoin. Explore guides, tools, and resources to start your Bitcoin journey.">
-
-  <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="BTCforPlebs">
-  <meta property="og:description" content="A place to help ordinary people learn about Bitcoin">
-  <meta property="og:image" content="images/thumb.jpeg">
-  <meta property="og:url" content="https://btcforplebs.com">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <!-- favicon -->
-  <link rel="icon" href="images/favicon.png" type="image/png">
-
-  <!-- scripts -->
-  <script src="assets/js/scripts.js"></script>
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+  <meta name="description" content="Bitcoin, Cashu, Nostr resources for plebs.">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-  <!-- Bitcoin Price Banner -->
-
   <div class="container">
-    <h1>Welcome to BTCforPlebs</h1>
-    <h3>A place to help ordinary people learn about Bitcoin</h3>
-    <img src="/images/btcforplebs_profile.gif" alt="Profile Picture" class="profile-picture">
+    <h1>BTCforPlebs</h1>
+    <p class="subtitle">Resources for the Sovereign Individual</p>
 
-    <!-- Learn Links (unchanged) -->
-    <a href="/learn-bitcoin" class="button prefetch">Learn About Bitcoin</a>
-    <a href="/learn-nostr" class="button prefetch">Learn About Nostr</a>
-    <a href="/learn-cashu" class="button prefetch">Learn About Cashu</a>
-    <a href="/bitcoin-and-the-bible" class="button prefetch">Bitcoin & The Bible</a>
+    <div class="grid">
+      <a href="/learn-bitcoin" class="card">
+        <div class="card-icon">₿</div>
+        <div class="card-title">Learn Bitcoin</div>
+      </a>
 
-    <!-- Bitcoin Links -->
-    <button class="button" id="bitcoin-folder-btn" onclick="toggleFolder('folder2', 'bitcoin-folder-btn')">Use Bitcoin
-      <span style="color: #F7931A;">←</span></button>
-    <div class="links" id="folder2">
-      <a href="https://lightning.btcforplebs.com" target="_blank" class="prefetch">Lightning <span class="status-emoji"
-          data-url="https://lightning.btcforplebs.com">⏳</span></a>
-      <a href="https://mempool.btcforplebs.com" target="_blank" class="prefetch">Mempool <span class="status-emoji"
-          data-url="https://mempool.btcforplebs.com">⏳</span></a>
-      <a href="https://bitfeed.live" class="prefetch">Bitfeed.Live ⚪️ </a>
-      <a href="https://hodl.camp" class="prefetch">Hodl.Camp ⚪️ </a>
-      <a href="https://bitview.space" class="prefetch">Bitview.Space ⚪️ </a>
+      <a href="/learn-cashu" class="card">
+        <div class="card-icon">🥜</div>
+        <div class="card-title">Learn Cashu</div>
+      </a>
+
+      <a href="/learn-nostr" class="card">
+        <div class="card-icon">🤙</div>
+        <div class="card-title">Learn Nostr</div>
+      </a>
+
+      <a href="/mint" class="card">
+        <div class="card-icon">🏦</div>
+        <div class="card-title">Mint</div>
+      </a>
+
+      <a href="/bitcoin-and-the-bible" class="card">
+        <div class="card-icon">📖</div>
+        <div class="card-title">Bitcoin & The Bible</div>
+      </a>
+
+      <a href="/nip49-decrypt" class="card">
+        <div class="card-icon">🔐</div>
+        <div class="card-title">NIP-49 Decrypt</div>
+      </a>
     </div>
 
-    <!-- Nostr Links -->
-    <button class="button" id="nostr-folder-btn" onclick="toggleFolder('folder1', 'nostr-folder-btn')">Use Nostr <span
-        style="color: #F7931A;">←</span></button>
-    <div class="links" id="folder1">
-
-      <a href="/relay" target="_blank" class="prefetch">Relay <span class="status-emoji"
-          data-url="https://relay.btcforplebs.com">⏳</span></a>
-      Nostr Tools
-      <a href="https://nsec.btcforplebs.com" target="_blank" class="prefetch">Nsec Bunker <span class="status-emoji"
-          data-url="https://nsec.btcforplebs.com">⏳</span></a>
-      <a href="https://ncryptdesec.btcforplebs.com" target="_blank" class="prefetch">NcryptDEsec <span
-          class="status-emoji" data-url="https://ncryptdesec.btcforplebs.com">⏳</span></a>
-
-      Nostr Clients
-      <a href="https://nostrudel.btcforplebs.com" target="_blank" class="prefetch">Nostrudel <span class="status-emoji"
-          data-url="https://nostrudel.btcforplebs.com">⏳</span></a>
-      <a href="https://coracle.btcforplebs.com" target="_blank" class="prefetch">Coracle <span class="status-emoji"
-          data-url="https://coracle.btcforplebs.com">⏳</span></a>
-      <a href="https://jumble.btcforplebs.com" target="_blank" class="prefetch">Jumble <span class="status-emoji"
-          data-url="https://jumble.btcforplebs.com">⏳</span></a>
-      <a href="https://fevela.btcforplebs.com" target="_blank" class="prefetch">Fevela <span class="status-emoji"
-          data-url="https://fevela.btcforplebs.com">⏳</span></a>
-      <a href="https://nosotros.btcforplebs.com" target="_blank" class="prefetch">Nosotros <span class="status-emoji"
-          data-url="https://nosotros.btcforplebs.com">⏳</span></a>
-      <a href="https://shipyard.btcforplebs.com" target="_blank" class="prefetch">Shipyard <span class="status-emoji"
-          data-url="https://shipyard.btcforplebs.com">⏳</span></a>
-
-
-      Nostr Community (add community.btcforplebs.com)
-      <a href="https://flotilla.btcforplebs.com/" target=" _blank" class="prefetch">Flotilla <span class="status-emoji"
-          data-url="https://community.btcforplebs.com">⏳</span></a>
-
-      Google Drive Replacement (requires blossom server)
-      <a href="https://bloom.btcforplebs.com" target="_blank" class="prefetch">Bloom <span class="status-emoji"
-          data-url="https://bloom.btcforplebs.com">⏳</span></a>
-    </div>
-
-    <!-- Cashu Links -->
-    <button class="button" id="cashu-folder-btn" onclick="toggleFolder('folder3', 'cashu-folder-btn')">Use Cashu <span
-        style="color: #F7931A;">←</span></button>
-    <div class="links" id="folder3">
-      <a href="https://cashu.btcforplebs.com" class="prefetch">Cashu Wallet Web App <span class="status-emoji"
-          data-url="https://cashu.btcforplebs.com">⏳</span></a>
-      <a href="/mint" class="prefetch">Cashu Mint <span class="status-emoji"
-          data-url="https://mint.btcforplebs.com">⏳</span></a>
-      <a href="https://macadamia.cash" class="prefetch">Macadamia (iOS) ⚪️ </a>
-      <a href="https://minibits.cash" class="prefetch">Minibits (Android) ⚪️ </a>
-    </div>
-
-    <small>🟢 = online | 🔴 = offline | ⚪️ = external site</small>
-    <br></br>
+    <footer>
+      &copy;
+      <script>document.write(new Date().getFullYear())</script> BTCforPlebs.com
+    </footer>
   </div>
 
-
-  <script src="https://btcforplebs.com/nostr-chat-widget.js"
-    data-nostr-pubkey="75462f4dece4fbde54a535cfa09eb0d329bda090a9c2f9ed6b5f9d1d2fb6c15b"
-    data-brand-name="Chat with BTCforPlebs" data-color="#fdad01" data-color-secondary="#222222">
-    </script>
-
-  <script>
-    // emoji status fetcher
-    document.addEventListener('DOMContentLoaded', init);
-
-    const apiEndpoint = "/api/link-status";
-
-    async function init() {
-      try {
-        console.log("🔄 Fetching statuses from:", apiEndpoint);
-        const response = await fetch(apiEndpoint);
-        const statuses = await response.json();
-        console.log("✅ Received statuses:", statuses);
-
-        document.querySelectorAll(".status-emoji[data-url]").forEach(span => {
-          const url = span.dataset.url;
-          console.log("🔍 Checking span for:", url);
-
-          if (!url) {
-            console.warn("⚠️ Span missing data-url:", span);
-            return;
-          }
-
-          const status = statuses[url];
-
-          if (!status) {
-            console.warn(`⚠️ No status found in JSON for: ${url}`);
-          } else {
-            const emoji = status === "online" ? "🟢" : "🔴";
-            console.log(`✅ ${url} is ${status}, setting emoji: ${emoji}`);
-            span.textContent = `${emoji} `;
-            span.style.display = 'inline-block';
-          }
-        });
-      } catch (error) {
-        console.error("❌ Error fetching or processing statuses:", error);
-      }
-    }
-  </script>
-
-  <script>
-    // Toggle folders
-    function toggleFolder(folderId, buttonId) {
-      const folder = document.getElementById(folderId);
-      const button = document.getElementById(buttonId);
-      if (!folder || !button) return;
-
-      if (folder.style.display === "none" || folder.style.display === "") {
-        folder.style.display = "block";
-        button.innerHTML = button.innerHTML.replace("←", "↓");
-
-      } else {
-        folder.style.display = "none";
-        button.innerHTML = button.innerHTML.replace("↓", "←");
-      }
-    }
-  </script>
-
-
-  <div id="footer"></div>
 </body>
 
 </html>

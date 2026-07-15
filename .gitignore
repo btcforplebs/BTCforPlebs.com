@@ -2,8 +2,9 @@
 BTCforPlebs Website Videos/*
 .gitignore
 node_modules/*
+**/node_modules/
+public/dashboard/dist/
 package-lock.json
 public/assets/data/link-status.json
 public/local.html
-public/nostr-chat-widget-mini.js
 public/nostr-chat-widget-mini.js

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Check NIP-49</title>
+</head>
+
+<body>
+    <div id="result">Checking...</div>
+    <script type="module">
+        import * as NostrTools from 'https://esm.sh/nostr-tools@2.7.0';
+
+        console.log('Keys:', Object.keys(NostrTools));
+
+        if (NostrTools.nip49) {
+            document.getElementById('result').textContent = 'NIP-49 FOUND';
+            console.log('NIP-49 found:', NostrTools.nip49);
+        } else {
+            document.getElementById('result').textContent = 'NIP-49 NOT FOUND';
+            console.log('NIP-49 NOT found');
+        }
+    </script>
+</body>
+
+</html>
